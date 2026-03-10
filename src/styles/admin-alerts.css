@@ -1,0 +1,144 @@
+/* ================= ROOT ================= */
+
+:root {
+  --rmf-blue: #0f2e63;
+  --rmf-blue-dark: #0a1f44;
+  --rmf-red: #d71920;
+  --rmf-gold: #facc15;
+  --rmf-green: #16a34a;
+  --rmf-gray: #64748b;
+}
+
+/* ================= CONTAINER ================= */
+
+.alerts-container {
+  padding: 32px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left,#eef2ff,transparent 60%),
+    linear-gradient(135deg,#f8fafc,#eef2ff);
+}
+
+/* ================= HEADER ================= */
+
+.alerts-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--rmf-blue);
+}
+
+.alerts-header p {
+  color: var(--rmf-gray);
+  margin-top: 6px;
+}
+
+/* ================= SEARCH ================= */
+
+.alerts-search {
+  margin: 30px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 6px 20px rgba(0,0,0,.05);
+}
+
+.alerts-search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+}
+
+/* ================= ALERT LIST ================= */
+
+.alerts-list {
+  display: grid;
+  gap: 16px;
+}
+
+/* ================= ALERT CARD ================= */
+
+.alert-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 18px;
+  border-radius: 18px;
+
+  background: white;
+  border: 1px solid #e5e7eb;
+
+  transition: .3s ease;
+  cursor: pointer;
+}
+
+.alert-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.06);
+}
+
+.alert-left {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.alert-icon {
+  color: var(--rmf-red);
+}
+
+/* ================= META ================= */
+
+.alert-meta {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--rmf-gray);
+}
+
+.alert-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ================= BADGES ================= */
+
+.alert-badge {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.alert-badge.critical {
+  background: var(--rmf-red);
+  color: white;
+}
+
+.alert-badge.warning {
+  background: var(--rmf-gold);
+  color: black;
+}
+
+.alert-badge.info {
+  background: var(--rmf-blue);
+  color: white;
+}
+
+/* ================= EMPTY ================= */
+
+.empty-state {
+  text-align: center;
+  color: var(--rmf-gray);
+  padding: 40px;
+}

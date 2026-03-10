@@ -1,0 +1,181 @@
+/* ===============================
+   HR DASHBOARD — ENTERPRISE UI
+   Royal Mabati Factory ETMS
+================================= */
+
+.hr-dashboard {
+  padding: 28px;
+  background: #f4f6f8;
+  min-height: 100vh;
+  animation: fadeIn 0.4s ease;
+}
+
+/* ================= TITLE ================= */
+
+.hr-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #111827;
+}
+
+/* ================= KPI STATS ================= */
+
+.hr-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.hr-stat-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hr-stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,#0ea5e9,#22c55e);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.hr-stat-card:hover::before {
+  opacity: 0.06;
+}
+
+.hr-stat-card h4 {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 10px;
+}
+
+.hr-stat-card p {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+  color: #111827;
+}
+
+.hr-stat-icon {
+  width: 24px;
+  height: 24px;
+  color: #0ea5e9;
+}
+
+/* ================= SECTIONS ================= */
+
+.hr-section {
+  margin-top: 34px;
+}
+
+.hr-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #111827;
+}
+
+/* ================= GRID CARDS ================= */
+
+.hr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap: 16px;
+}
+
+.hr-card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.hr-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.09);
+}
+
+.hr-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 10px;
+  color: #111827;
+}
+
+.hr-card p {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+.hr-card-icon {
+  width: 22px;
+  height: 22px;
+  color: #22c55e;
+}
+
+/* ================= TIMELINE ================= */
+
+.hr-timeline {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.hr-timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #374151;
+  transition: 0.2s ease;
+}
+
+.hr-timeline-item:last-child {
+  border-bottom: none;
+}
+
+.hr-timeline-item svg {
+  width: 18px;
+  height: 18px;
+  color: #0ea5e9;
+}
+
+/* ================= ANIMATIONS ================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+  .hr-dashboard {
+    padding: 18px;
+  }
+
+  .hr-title {
+    font-size: 22px;
+  }
+}

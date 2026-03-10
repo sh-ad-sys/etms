@@ -1,0 +1,148 @@
+:root{
+  --rmf-blue:#0f2e63;
+  --rmf-blue-dark:#0a1f44;
+  --rmf-red:#d71920;
+  --rmf-green:#16a34a;
+  --rmf-gold:#facc15;
+  --rmf-border:#e5e7eb;
+  --rmf-gray:#64748b;
+}
+
+/* PAGE */
+
+.device-tracking-container{
+  padding:36px;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top,#eef2ff,transparent 60%),
+    linear-gradient(135deg,#f8fafc,#eef2ff);
+}
+
+/* HEADER */
+
+.tracking-header h1{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:32px;
+  font-weight:800;
+  color:var(--rmf-blue);
+}
+
+.tracking-header p{
+  color:var(--rmf-gray);
+  margin-top:6px;
+}
+
+/* SUMMARY */
+
+.tracking-summary{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  margin:30px 0;
+}
+
+.summary-card{
+  padding:24px;
+  border-radius:18px;
+  background:white;
+  border:1px solid var(--rmf-border);
+  box-shadow:0 12px 35px rgba(0,0,0,.05);
+  transition:.3s;
+}
+
+.summary-card:hover{
+  transform:translateY(-4px);
+}
+
+.summary-card h3{
+  color:var(--rmf-gray);
+  font-size:14px;
+}
+
+.summary-card p{
+  font-size:26px;
+  font-weight:700;
+}
+
+.summary-card.online p{color:var(--rmf-green);}
+.summary-card.offline p{color:var(--rmf-red);}
+.summary-card.suspicious p{color:var(--rmf-gold);}
+
+/* TABLE */
+
+.tracking-table-card{
+  background:white;
+  padding:26px;
+  border-radius:22px;
+  border:1px solid var(--rmf-border);
+  box-shadow:0 25px 60px rgba(0,0,0,.05);
+  overflow-x:auto;
+}
+
+.tracking-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.tracking-table th{
+  background:linear-gradient(135deg,var(--rmf-blue),var(--rmf-blue-dark));
+  color:white;
+  padding:14px;
+  text-align:left;
+  font-size:13px;
+}
+
+.tracking-table td{
+  padding:16px;
+  border-bottom:1px solid #f1f5f9;
+}
+
+/* DEVICE CELL */
+
+.device-cell{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* STATUS */
+
+.device-status{
+  padding:6px 14px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:600;
+  color:white;
+}
+
+.device-status.online{
+  background:var(--rmf-green);
+}
+
+.device-status.offline{
+  background:var(--rmf-red);
+}
+
+.device-status.suspicious{
+  background:var(--rmf-gold);
+  color:black;
+}
+
+/* LOCATION */
+
+.location-cell,
+.ip-cell{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+  .device-tracking-container{
+    padding:18px;
+  }
+}

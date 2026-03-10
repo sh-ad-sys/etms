@@ -1,0 +1,157 @@
+/* ================= ROOT ================= */
+
+:root {
+  --rmf-blue: #0f2e63;
+  --rmf-blue-dark: #0a1f44;
+  --rmf-red: #d71920;
+  --rmf-gold: #facc15;
+  --rmf-green: #16a34a;
+  --rmf-gray: #64748b;
+}
+
+/* ================= CONTAINER ================= */
+
+.audit-container {
+  padding: 32px;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(circle at top left,#eef2ff,transparent 60%),
+    linear-gradient(135deg,#f8fafc,#eef2ff);
+}
+
+/* ================= HEADER ================= */
+
+.audit-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--rmf-blue);
+}
+
+.audit-header p {
+  color: var(--rmf-gray);
+  margin-top: 6px;
+}
+
+/* ================= SEARCH ================= */
+
+.audit-search {
+  margin: 30px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: white;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,.05);
+}
+
+.audit-search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+}
+
+/* ================= TABLE CARD ================= */
+
+.audit-table-card {
+  background: white;
+  border-radius: 22px;
+  padding: 24px;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 20px 60px rgba(15,23,42,.07);
+
+  overflow-x: auto;
+}
+
+/* ================= TABLE ================= */
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.audit-table th {
+  text-align: left;
+  padding: 16px;
+
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+
+  background: linear-gradient(135deg,var(--rmf-blue),var(--rmf-blue-dark));
+  color: white;
+}
+
+.audit-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+
+/* ================= ROW ================= */
+
+.audit-row {
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.audit-row:hover {
+  background: #f1f5ff;
+}
+
+/* ================= META ================= */
+
+.audit-user,
+.audit-module,
+.audit-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ================= SEVERITY BADGES ================= */
+
+.audit-severity {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.audit-severity.low {
+  background: var(--rmf-green);
+  color: white;
+}
+
+.audit-severity.medium {
+  background: var(--rmf-gold);
+  color: black;
+}
+
+.audit-severity.high {
+  background: var(--rmf-red);
+  color: white;
+}
+
+.audit-severity.critical {
+  background: #7f1d1d;
+  color: white;
+}
+
+/* ================= EMPTY ================= */
+
+.audit-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--rmf-gray);
+}

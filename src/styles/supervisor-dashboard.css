@@ -1,0 +1,235 @@
+/* ===================================================
+   SUPERVISOR DASHBOARD STYLES
+   Royal Mabati Factory Branded Enterprise UI
+=================================================== */
+
+/* ===== ROYAL MABATI BRAND COLORS ===== */
+:root {
+  --rmf-blue: #0f2e63;
+  --rmf-blue-light: #1e40af;
+  --rmf-yellow: #facc15;
+  --rmf-yellow-soft: #fef9c3;
+  --rmf-white: #ffffff;
+  --rmf-gray: #6b7280;
+  --rmf-border: #e5e7eb;
+  --rmf-bg-soft: #f8fafc;
+}
+
+/* ===== GLOBAL BACKGROUND ===== */
+body {
+  background: linear-gradient(
+    135deg,
+    #f8fafc 0%,
+    #eef2ff 40%,
+    #fefce8 100%
+  );
+}
+
+/* ===================================================
+   CARD CONTAINER
+=================================================== */
+.dashboard-card {
+  background: var(--rmf-white);
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid var(--rmf-border);
+  box-shadow: 0 6px 18px rgba(15, 46, 99, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Royal Blue top accent line */
+.dashboard-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    var(--rmf-blue),
+    var(--rmf-yellow)
+  );
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(15, 46, 99, 0.12);
+}
+
+/* ===================================================
+   SECTION TITLES
+=================================================== */
+.dashboard-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--rmf-blue);
+  letter-spacing: 0.4px;
+}
+
+/* ===================================================
+   KPI STAT CARD
+=================================================== */
+.dashboard-card h3 {
+  margin-top: 4px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--rmf-blue);
+}
+
+.dashboard-card p {
+  font-size: 13px;
+  color: var(--rmf-gray);
+}
+
+/* Yellow KPI highlight effect */
+.dashboard-card:hover h3 {
+  color: var(--rmf-blue-light);
+}
+
+/* ===================================================
+   ACTION BUTTONS
+=================================================== */
+.dashboard-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--rmf-bg-soft);
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--rmf-blue);
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+
+.dashboard-action:hover {
+  background: linear-gradient(
+    135deg,
+    var(--rmf-blue),
+    var(--rmf-blue-light)
+  );
+  color: white;
+  border-color: var(--rmf-yellow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 46, 99, 0.2);
+}
+
+/* Click press */
+.dashboard-action:active {
+  transform: scale(0.97);
+}
+
+/* ===================================================
+   MINI ACTION BUTTONS
+=================================================== */
+.dashboard-mini-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--rmf-blue);
+  background: #f3f4f6;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.dashboard-mini-action:hover {
+  background: var(--rmf-yellow-soft);
+  color: var(--rmf-blue);
+  border-color: var(--rmf-yellow);
+  transform: translateY(-1px);
+}
+
+/* ===================================================
+   ALERT STYLING (Industrial Feel)
+=================================================== */
+.dashboard-alert {
+  background: #fff7ed;
+  border-left: 4px solid var(--rmf-yellow);
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #92400e;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.dashboard-alert:hover {
+  background: #ffedd5;
+}
+
+.dashboard-alert.clickable {
+  cursor: pointer;
+}
+
+.dashboard-alert.clickable:hover {
+  text-decoration: underline;
+  color: var(--rmf-blue);
+}
+
+/* ===================================================
+   HEADER ENHANCEMENT
+=================================================== */
+.supervisor-header h1 {
+  color: var(--rmf-blue);
+}
+
+.supervisor-header p {
+  color: var(--rmf-gray);
+}
+
+/* ===================================================
+   CHART POLISH
+=================================================== */
+.recharts-wrapper {
+  font-size: 12px;
+}
+
+/* Chart tooltip styling */
+.recharts-tooltip-wrapper {
+  font-size: 12px;
+}
+
+/* ===================================================
+   FOCUS STATES (Accessibility)
+=================================================== */
+.dashboard-action:focus,
+.dashboard-mini-action:focus {
+  outline: 2px solid var(--rmf-yellow);
+  outline-offset: 2px;
+}
+
+/* ===================================================
+   RESPONSIVE IMPROVEMENTS
+=================================================== */
+@media (max-width: 1024px) {
+  .dashboard-card {
+    padding: 18px;
+  }
+
+  .dashboard-action {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-card {
+    padding: 16px;
+  }
+
+  .dashboard-section-title {
+    font-size: 14px;
+  }
+
+  .dashboard-card h3 {
+    font-size: 22px;
+  }
+}

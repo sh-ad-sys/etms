@@ -1,0 +1,155 @@
+/* ===============================
+   PAGE BACKGROUND
+================================ */
+.security-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  font-family: "Inter", sans-serif;
+}
+
+/* ===============================
+   HEADER
+================================ */
+.security-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.security-header p {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* ===============================
+   SEARCH BAR
+================================ */
+.security-search {
+  background: #ffffff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 24px;
+  transition: all 0.2s ease;
+}
+
+.security-search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.security-search:focus-within {
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.2);
+}
+
+/* ===============================
+   DEVICE CARD
+================================ */
+.device-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+}
+
+.device-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* ===============================
+   DEVICE LEFT SECTION
+================================ */
+.device-info {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.device-icon {
+  padding: 12px;
+  background: #eff6ff;
+  border-radius: 12px;
+}
+
+.device-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.device-meta {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ===============================
+   STATUS BADGES
+================================ */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.status-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-revoked {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ===============================
+   REVOKE BUTTON
+================================ */
+.revoke-btn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #dc2626;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.revoke-btn:hover {
+  color: #991b1b;
+  text-decoration: underline;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .device-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .security-page {
+    padding: 20px;
+  }
+}

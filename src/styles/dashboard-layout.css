@@ -1,0 +1,95 @@
+/* ===================================================
+   DASHBOARD ROOT LAYOUT
+=================================================== */
+
+.dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9; /* slate-100 */
+}
+
+/* ===================================================
+   SIDEBAR AREA
+=================================================== */
+
+.dashboard-sidebar {
+  transition: width 0.25s ease;
+  z-index: 40;
+  flex-shrink: 0; /* Sidebar does not shrink */
+}
+
+/* Sidebar width states */
+.dashboard-sidebar.expanded {
+  width: 260px;
+}
+
+.dashboard-sidebar.collapsed {
+  width: 80px;
+}
+
+/* ===================================================
+   MAIN WRAPPER (RIGHT SIDE)
+=================================================== */
+
+.dashboard-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* takes remaining space */
+  min-height: 100vh;
+  transition: all 0.25s ease;
+}
+
+/* ===================================================
+   TOPBAR OFFSET
+   (Prevents content from hiding under fixed header)
+=================================================== */
+
+.dashboard-content {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  margin-top: 64px; /* topbar height */
+  width: 100%;
+  transition: all 0.25s ease;
+}
+
+/* ===================================================
+   INNER CONTENT CONTAINER
+=================================================== */
+
+.dashboard-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===================================================
+   SMOOTH TRANSITIONS
+=================================================== */
+
+.dashboard-main-wrapper,
+.dashboard-content {
+  transition: all 0.3s ease;
+}
+
+/* ===================================================
+   RESPONSIVE TIP
+=================================================== */
+
+/* Optional: Make sidebar overlay on small screens */
+@media (max-width: 1024px) {
+  .dashboard-sidebar {
+    position: fixed;
+    height: 100%;
+    left: -260px; /* hide offscreen by default */
+    top: 0;
+    z-index: 50;
+  }
+  
+  .dashboard-sidebar.expanded {
+    left: 0;
+  }
+  
+  .dashboard-main-wrapper {
+    margin-left: 0; /* main content always full width on mobile */
+  }
+}

@@ -1,0 +1,153 @@
+/* =========================================
+   ROYAL MABATI HR ATTENDANCE DASHBOARD
+========================================= */
+
+:root {
+  --rmf-red: #d71920;
+  --rmf-blue: #0f2e63;
+  --rmf-gold: #facc15;
+  --rmf-gray: #6b7280;
+}
+
+.hr-attendance-container {
+  padding: 30px;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #f8fafc,
+    #eef2ff,
+    #f1f5f9
+  );
+}
+
+/* HEADER */
+
+.hr-attendance-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--rmf-blue);
+}
+
+.hr-attendance-header p {
+  color: var(--rmf-gray);
+}
+
+/* KPI GRID */
+
+.attendance-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.attendance-kpi-card {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.05);
+  transition: .3s;
+}
+
+.attendance-kpi-card:hover {
+  transform: translateY(-4px);
+}
+
+.attendance-kpi-card h3 {
+  font-size: 22px;
+}
+
+/* KPI COLORS */
+
+.attendance-kpi-card.success {
+  border-left: 6px solid #16a34a;
+}
+
+.attendance-kpi-card.warning {
+  border-left: 6px solid #f59e0b;
+}
+
+.attendance-kpi-card.danger {
+  border-left: 6px solid #dc2626;
+}
+
+.attendance-kpi-card.blue {
+  border-left: 6px solid var(--rmf-blue);
+}
+
+/* TABLE */
+
+.attendance-table-card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.05);
+}
+
+.attendance-table-card h2 {
+  margin-bottom: 20px;
+  color: var(--rmf-blue);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: linear-gradient(90deg,#0f2e63,#1e3a8a);
+  color: white;
+}
+
+th {
+  padding: 14px;
+  font-size: 13px;
+  text-align: left;
+}
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+
+/* STATUS BADGES */
+
+.status {
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.present {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.late {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.absent {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .hr-attendance-container{
+    padding: 15px;
+  }
+
+  table{
+    font-size: 12px;
+  }
+
+}

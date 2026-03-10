@@ -1,0 +1,62 @@
+:root{
+  --bg:#f7fbff;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#2563eb;
+  --accent-dark:#1e3a8a;
+  --success:#10b981;
+  --danger:#ef4444;
+}
+
+.page{ padding:28px 20px; min-height:100vh; background: linear-gradient(180deg,var(--bg), #eef6ff); font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; color:#071033 }
+.header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px }
+.headerLeft h1{ margin:0; font-size:22px; font-weight:800 }
+.lead{ color:var(--muted); margin-top:6px }
+.avatarWrap{ display:flex; align-items:center }
+.avatar{ border-radius:8px; }
+
+.grid{ display:block; max-width:1000px; margin:0 auto }
+.card{ background:var(--card); border-radius:14px; padding:18px; box-shadow: 0 14px 40px rgba(2,6,23,0.06); }
+
+.currentRow{ display:flex; justify-content:space-between; gap:18px; align-items:flex-start }
+.cardTitle{ font-size:13px; color:var(--muted); margin-bottom:6px }
+.statusRow{ display:flex; align-items:center; gap:12px }
+.badge{ padding:8px 12px; border-radius:999px; font-weight:800; font-size:13px }
+.badgeActive{ background: linear-gradient(90deg,#f0f7ff,#e7f0ff); color:var(--accent-dark) }
+.badgeLost{ background: linear-gradient(90deg,#fff1f2,#ffeef0); color:var(--danger) }
+.badgeSuspended{ background: linear-gradient(90deg,#fff7ed,#fff4e6); color:#b45309 }
+.badgeRevoked{ background: linear-gradient(90deg,#f8fafc,#f3f4f6); color:#374151 }
+.badgePending{ background: linear-gradient(90deg,#f0fdf4,#ecfdf3); color:var(--success) }
+.meta{ color:var(--muted); font-size:13px }
+.note{ margin-top:8px; color:#111827; font-size:13px }
+
+.actions{ display:flex; gap:10px; align-items:center }
+.primary{ background: linear-gradient(90deg,var(--accent), #1e40af); color:#fff; padding:10px 14px; border-radius:10px; border:none; font-weight:700; cursor:pointer }
+.primary:disabled{ opacity:0.6; cursor:not-allowed }
+.ghost{ background:transparent; border:1px solid rgba(15,23,42,0.06); padding:8px 12px; border-radius:8px; cursor:pointer }
+
+.section{ margin-top:18px }
+.sectionTitle{ margin:0 0 10px 0; font-weight:700 }
+.historyList{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px }
+.historyItem{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; padding:12px; border-radius:10px; background:linear-gradient(180deg,#fff,#fbfdff); border:1px solid rgba(15,23,42,0.03) }
+.historyLeft{ display:flex; gap:12px; align-items:flex-start }
+.historyStatus{ min-width:120px }
+.historyNote{ color:var(--muted); font-size:13px }
+.historyDate{ color:var(--muted); font-size:13px }
+
+.loader{ padding:40px; text-align:center; color:var(--muted) }
+
+.replacementBox{ padding:12px; border-radius:8px; background:linear-gradient(180deg,#fff,#fbfdff); border:1px solid rgba(15,23,42,0.03); color:var(--muted) }
+.simButton{ margin-top:8px; background:#f3f4f6; border:1px solid rgba(15,23,42,0.04); padding:8px 10px; border-radius:8px; cursor:pointer }
+
+.applyForm{ padding:12px; border-radius:8px; background:linear-gradient(180deg,#fff,#fcfeff); border:1px solid rgba(15,23,42,0.04) }
+.applyInner .label{ margin-top:0 }
+
+
+.modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(2,6,23,0.45); z-index:40 }
+.modalCard{ background:var(--card); padding:18px; border-radius:12px; width:420px; box-shadow:0 16px 60px rgba(2,6,23,0.3) }
+.modalActions{ display:flex; justify-content:flex-end; gap:10px; margin-top:12px }
+
+.toast{ position:fixed; right:20px; bottom:20px; background:#071033; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:0 10px 30px rgba(2,6,23,0.2) }
+
+@media (max-width:900px){ .currentRow{ flex-direction:column } .modalCard{ width:92% } }

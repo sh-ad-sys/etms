@@ -1,0 +1,125 @@
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 260px;
+  background: #1e3a8a;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+
+  /* ⭐ KEEP SIDEBAR VISIBLE WHEN SCROLLING */
+  position: sticky;
+  top: 64px;                 /* height of your topbar */
+  height: calc(100vh - 64px);
+
+  overflow-y: auto;
+
+  transition: width 0.25s ease;
+  z-index: 40;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+/* ---------------- HEADER ---------------- */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.collapse-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* ---------------- MENU ---------------- */
+.sidebar-menu {
+  flex: 1;
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+/* SECTION ---------------- */
+.sidebar-section {
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-section-title {
+  width: 100%;
+  background: transparent;
+  color: white;
+  font-weight: 600;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.sidebar-section-title:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* LINKS ---------------- */
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.25rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.5rem;
+
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-link.active {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* COLLAPSED MODE: SHOW ICONS ONLY ---------------- */
+.sidebar.collapsed .sidebar-link span,
+.sidebar.collapsed .sidebar-section-title span {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-links {
+  margin-left: 0;
+}
+
+/* ---------------- FOOTER ---------------- */
+.sidebar-footer {
+  padding: 0.75rem;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.75;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transition: opacity 0.2s;
+}

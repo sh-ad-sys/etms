@@ -1,0 +1,161 @@
+/* ===================================================
+   MANAGER ATTENDANCE OVERVIEW - ETMS
+   Royal Mabati Corporate Theme
+=================================================== */
+
+.manager-overview-container {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+}
+
+/* HEADER */
+.manager-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.manager-header p {
+  color: #64748b;
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+/* KPI GRID */
+.manager-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.manager-kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: 0.25s ease;
+}
+
+.manager-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.manager-kpi-card span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.manager-kpi-card h3 {
+  font-size: 22px;
+  margin-top: 3px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* STATUS COLORS */
+.manager-kpi-card.present {
+  border-left: 4px solid #16a34a;
+}
+
+.manager-kpi-card.late {
+  border-left: 4px solid #f59e0b;
+}
+
+.manager-kpi-card.absent {
+  border-left: 4px solid #dc2626;
+}
+
+/* SEARCH */
+.manager-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.manager-search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* TABLE */
+.manager-table-wrapper {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #1e3a8a;
+  color: white;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+}
+
+tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* STATUS BADGES */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.present {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.late {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.absent {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  th, td {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .manager-header h1 {
+    font-size: 20px;
+  }
+}

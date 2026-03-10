@@ -1,0 +1,174 @@
+/* ==========================================================
+   ROYAL MABATI FACTORY
+   HR ETMS STAFF TABLE - CORPORATE BRANDING
+========================================================== */
+
+:root {
+  --rmf-red: #d71920;
+  --rmf-blue: #0f2e63;
+  --rmf-dark: #111827;
+  --rmf-gray: #6b7280;
+  --rmf-light-bg: #f8fafc;
+  --rmf-border: #e5e7eb;
+  --rmf-gold: #facc15;
+}
+
+/* PAGE BACKGROUND */
+
+.hr-table-container {
+  padding: 30px;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #f8fafc,
+    #eef2ff,
+    #f1f5f9
+  );
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* HEADER */
+
+.hr-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.hr-table-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--rmf-blue);
+}
+
+.hr-table-header p {
+  color: var(--rmf-gray);
+  font-size: 14px;
+}
+
+/* SEARCH BOX */
+
+.hr-table-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--rmf-border);
+  box-shadow: 0 3px 10px rgba(0,0,0,.04);
+}
+
+.hr-table-search input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 250px;
+}
+
+/* TABLE CONTAINER */
+
+.table-wrapper {
+  background: white;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 15px 40px rgba(15,46,99,.08);
+  border: 1px solid var(--rmf-border);
+}
+
+/* TABLE */
+
+.hr-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hr-table thead {
+  background: linear-gradient(
+    135deg,
+    var(--rmf-blue),
+    #1e3a8a
+  );
+  color: white;
+}
+
+.hr-table th {
+  padding: 15px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hr-table td {
+  padding: 15px;
+  font-size: 14px;
+  color: var(--rmf-dark);
+  border-bottom: 1px solid var(--rmf-border);
+}
+
+/* NAME CELL */
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* STATUS BADGES */
+
+.status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ROW HOVER */
+
+.hr-table tbody tr {
+  transition: 0.3s;
+}
+
+.hr-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* EMPTY STATE */
+
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  color: var(--rmf-gray);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .hr-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .hr-table-search input {
+    width: 100%;
+  }
+
+  .hr-table {
+    font-size: 12px;
+  }
+
+}

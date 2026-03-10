@@ -1,0 +1,213 @@
+/* ================= TOPBAR CONTAINER ================= */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 1000;
+}
+
+/* ================= LEFT ================= */
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ================= CENTER TITLE ================= */
+
+.topbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.topbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  white-space: nowrap;
+}
+
+/* ================= RIGHT ================= */
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+}
+
+/* ================= ICON BUTTON ================= */
+
+.topbar-icon {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.topbar-icon:hover {
+  color: #dc2626;
+}
+
+/* ================= NOTIFICATION BADGE ================= */
+
+.notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #dc2626;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================= NOTIFICATION DROPDOWN ================= */
+
+.notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: 120%;
+  width: 320px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  animation: fadeIn 0.25s ease;
+}
+
+.notification-header {
+  padding: 12px 16px;
+  font-weight: 600;
+  background: #1e3a8a;
+  color: white;
+}
+
+.notification-item {
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background: #f8fafc;
+}
+
+.notification-item.unread {
+  background: #eff6ff;
+}
+
+.notification-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.notification-message {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.notification-time {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+/* ================= USER PROFILE ================= */
+
+.topbar-user {
+  position: relative;
+}
+
+.topbar-user-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1e3a8a;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.topbar-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.3rem;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  min-width: 160px;
+  overflow: hidden;
+}
+
+.topbar-dropdown-item {
+  padding: 10px 14px;
+  display: block;
+  font-size: 14px;
+  color: #1e3a8a;
+  transition: 0.2s;
+}
+
+.topbar-dropdown-item:hover {
+  background: #f1f5f9;
+}
+
+.topbar-dropdown-item.logout {
+  color: #dc2626;
+}
+
+.topbar-dropdown-item.logout:hover {
+  background: #fee2e2;
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ================= NOTIFICATION PANEL BELOW TOPBAR ================= */
+
+.notification-wrapper {
+  position: absolute;
+  top: 64px; /* exactly below topbar height */
+  right: 1.5rem;
+  z-index: 999;
+}
+

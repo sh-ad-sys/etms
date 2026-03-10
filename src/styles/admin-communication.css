@@ -1,0 +1,301 @@
+/* ================= ROOT ================= */
+
+:root {
+  --rmf-blue: #0f2e63;
+  --rmf-blue-dark: #0a1f44;
+  --rmf-red: #d71920;
+  --rmf-green: #16a34a;
+  --rmf-gray: #64748b;
+  --rmf-border: #e2e8f0;
+}
+
+/* ================= CONTAINER ================= */
+
+.comm-container {
+  padding: 32px;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(circle at top,#eef2ff,transparent 60%),
+    linear-gradient(135deg,#f8fafc,#eef2ff);
+}
+
+/* ================= HEADER ================= */
+
+.comm-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--rmf-blue);
+}
+
+.comm-header p {
+  color: var(--rmf-gray);
+  margin-top: 6px;
+}
+
+/* ================= GATEWAY GRID ================= */
+
+.gateway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 22px;
+  margin: 35px 0;
+}
+
+/* ================= GATEWAY CARD ================= */
+
+.gateway-card {
+  background: white;
+  padding: 24px;
+  border-radius: 22px;
+
+  border: 1px solid var(--rmf-border);
+
+  box-shadow: 0 20px 50px rgba(15,23,42,.07);
+
+  transition: .3s ease;
+}
+
+.gateway-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Title */
+
+.gateway-title {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.gateway-title h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.gateway-title span {
+  font-size: 13px;
+  color: var(--rmf-gray);
+}
+
+/* Status */
+
+.gateway-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: 18px;
+
+  padding: 6px 14px;
+  border-radius: 30px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.gateway-status.active {
+  background: var(--rmf-green);
+  color: white;
+}
+
+.gateway-status.error {
+  background: var(--rmf-red);
+  color: white;
+}
+
+/* Button */
+
+.gateway-btn {
+  margin-top: 18px;
+
+  width: 100%;
+  padding: 12px;
+
+  border-radius: 14px;
+  border: none;
+
+  background: linear-gradient(
+    135deg,
+    var(--rmf-blue),
+    var(--rmf-blue-dark)
+  );
+
+  color: white;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  transition: .3s ease;
+}
+
+.gateway-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ================= FORM CARD ================= */
+
+.comm-card {
+  background: white;
+  padding: 28px;
+  border-radius: 22px;
+
+  border: 1px solid var(--rmf-border);
+
+  box-shadow: 0 25px 60px rgba(15,23,42,.08);
+}
+
+.comm-card h2 {
+  margin-bottom: 18px;
+  color: var(--rmf-blue);
+}
+
+/* Form */
+
+.comm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.comm-form input,
+.comm-form textarea {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--rmf-border);
+  font-size: 14px;
+}
+
+.comm-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Send Button */
+
+.send-btn {
+  background: linear-gradient(
+    135deg,
+    var(--rmf-green),
+    #15803d
+  );
+  /* ================= ALERT ================= */
+
+.comm-alert {
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 12px;
+
+  background: #fef3c7;
+  color: #92400e;
+
+  font-weight: 600;
+}
+
+/* ================= MODAL ================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(15,23,42,.6);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+
+  width: 420px;
+  max-width: 95%;
+
+  border-radius: 22px;
+
+  box-shadow: 0 25px 60px rgba(0,0,0,.25);
+}
+
+.modal h3 {
+  color: var(--rmf-blue);
+}
+
+.modal-sub {
+  color: var(--rmf-gray);
+  margin-bottom: 18px;
+}
+
+.modal label {
+  display: block;
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 12px;
+
+  border-radius: 12px;
+  border: 1px solid var(--rmf-border);
+
+  margin-top: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.modal-actions button {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: linear-gradient(
+    135deg,
+    var(--rmf-blue),
+    var(--rmf-blue-dark)
+  );
+  color: white;
+}
+
+  color: white;
+
+  border: none;
+  padding: 14px;
+
+  border-radius: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  transition: .3s ease;
+}
+
+.send-btn:hover {
+  transform: translateY(-3px);
+}

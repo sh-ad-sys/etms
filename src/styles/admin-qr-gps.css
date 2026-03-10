@@ -1,0 +1,125 @@
+/* ========================================================
+   ROYAL MABATI FACTORY 
+   QR & GPS ATTENDANCE SETTINGS
+========================================================= */
+
+:root {
+  --rmf-blue: #0f2e63;
+  --rmf-red: #d71920;
+  --rmf-green: #16a34a;
+  --rmf-gold: #facc15;
+  --rmf-gray: #6b7280;
+  --rmf-border: #e5e7eb;
+  --rmf-bg: #f8fafc;
+}
+
+.qr-gps-container {
+  padding: 32px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  font-family: Inter, sans-serif;
+}
+
+.qr-gps-header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--rmf-blue);
+}
+
+.qr-gps-header p {
+  margin-top: 6px;
+  color: var(--rmf-gray);
+}
+
+/* ================= SETTINGS CARD ================= */
+
+.settings-card {
+  margin-top: 30px;
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid var(--rmf-border);
+  box-shadow: 0 10px 25px rgba(0,0,0,.05);
+  transition: .3s ease;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--rmf-blue);
+  margin-bottom: 20px;
+}
+
+/* ================= FORM ================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-item label {
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--rmf-gray);
+}
+
+.form-item input[type="number"] {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--rmf-border);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toggle {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ================= INFO BOX ================= */
+
+.info-box {
+  margin-top: 16px;
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ================= SAVE BUTTON ================= */
+
+.save-section {
+  margin-top: 40px;
+}
+
+.btn-save {
+  background: var(--rmf-blue);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: .3s ease;
+}
+
+.btn-save:hover {
+  background: #0a2248;
+}
