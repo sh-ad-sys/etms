@@ -1,0 +1,209 @@
+/* ================================================================
+   Royal Mabati Factory – Manager Dashboard
+   Brand: Deep Blue #1a3a6b · Steel Blue #2563eb · Factory Red #dc2626
+   ================================================================ */
+
+:root {
+  --rmf-blue:       #1a3a6b;
+  --rmf-blue-mid:   #2563eb;
+  --rmf-blue-light: #dbeafe;
+  --rmf-red:        #dc2626;
+  --surface:        #ffffff;
+  --surface-soft:   #f8fafc;
+  --border:         #e2e8f0;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow:         0 1px 6px rgba(26,58,107,.08);
+  --shadow-md:      0 4px 20px rgba(26,58,107,.13);
+}
+
+.mgr-page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; }
+
+/* ── Loading / Error ── */
+.mgr-loading {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 80px; color: var(--text-muted); font-size: 15px;
+}
+.mgr-error {
+  background: #fee2e2; color: #991b1b;
+  padding: 16px; border-radius: var(--radius); margin: 24px;
+  border: 1px solid #fca5a5; font-size: 15px;
+}
+
+/* ── Header ── */
+.mgr-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 16px;
+  margin-bottom: 28px; padding-bottom: 20px;
+  border-bottom: 2px solid var(--rmf-blue-light);
+}
+.mgr-header h1 {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 26px; font-weight: 800; color: var(--rmf-blue); margin: 0;
+}
+.mgr-header h1 svg { color: var(--rmf-red); }
+.mgr-header p { font-size: 14px; color: var(--text-muted); margin: 5px 0 0; font-weight: 500; }
+.mgr-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.mgr-updated {
+  font-size: 12px; color: #16a34a; font-weight: 600;
+  background: #f0fdf4; border: 1px solid #86efac;
+  padding: 4px 10px; border-radius: 99px;
+}
+.mgr-refresh-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--rmf-blue), var(--rmf-blue-mid));
+  color: #fff; border: none; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,.3); transition: all 0.2s;
+}
+.mgr-refresh-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,.4); }
+.mgr-refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Card ── */
+.mgr-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  box-shadow: var(--shadow);
+}
+.mgr-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 700; color: var(--rmf-blue); margin: 0 0 18px;
+}
+
+/* ── KPI Grid ── */
+.mgr-kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-bottom: 4px;
+}
+.mgr-kpi-card {
+  display: flex; align-items: center; gap: 16px;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.mgr-kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.mgr-kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.mgr-kpi-blue::before   { background: linear-gradient(90deg, var(--rmf-blue), var(--rmf-blue-mid)); }
+.mgr-kpi-amber::before  { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.mgr-kpi-red::before    { background: linear-gradient(90deg, var(--rmf-red), #b91c1c); }
+.mgr-kpi-green::before  { background: linear-gradient(90deg, #16a34a, #15803d); }
+
+.mgr-kpi-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; border-radius: 10px; flex-shrink: 0;
+}
+.icon-blue  { background: var(--rmf-blue-light); color: var(--rmf-blue); }
+.icon-amber { background: #fef3c7; color: #d97706; }
+.icon-red   { background: #fee2e2; color: var(--rmf-red); }
+.icon-green { background: #dcfce7; color: #16a34a; }
+
+.mgr-kpi-label { font-size: 13px; color: var(--text-muted); margin: 0 0 4px; font-weight: 600; }
+.mgr-kpi-value { font-size: 26px; font-weight: 800; color: var(--text-primary); margin: 0; }
+
+/* ── Insights ── */
+.mgr-insights-card { border-left: 4px solid var(--rmf-blue); }
+.mgr-insights-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.mgr-insight-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 500;
+}
+.mgr-insight-item svg { flex-shrink: 0; margin-top: 2px; }
+.insight-up      { background: #f0fdf4; color: #166534; }
+.insight-down    { background: #fff1f2; color: #991b1b; }
+.insight-warning { background: #fffbeb; color: #92400e; }
+.insight-danger  { background: #fee2e2; color: #991b1b; }
+.insight-info    { background: var(--rmf-blue-light); color: var(--rmf-blue); }
+
+/* ── Pending Banner ── */
+.mgr-pending-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 22px; border-radius: var(--radius);
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1px solid #fde68a; text-decoration: none;
+  color: #92400e; font-size: 14px; font-weight: 600;
+  transition: all 0.2s; box-shadow: var(--shadow);
+}
+.mgr-pending-banner:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.mgr-banner-action { margin-left: auto; font-weight: 700; color: #d97706; font-size: 15px; }
+
+/* ── Chart Grid ── */
+.mgr-chart-grid {
+  display: grid; grid-template-columns: 1fr 340px; gap: 16px;
+}
+.mgr-chart-wide { grid-column: 1; }
+.mgr-chart-empty {
+  height: 200px; display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 14px;
+}
+
+/* ── Pie Legend ── */
+.mgr-pie-legend {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; margin-top: 10px;
+}
+.mgr-legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text-secondary);
+}
+.mgr-legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Table headers (Employee, Department, Check In, Check Out, Status) ── */
+.mgr-table-wrapper table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.mgr-table-wrapper thead tr {
+  background: linear-gradient(135deg, var(--rmf-blue), #1e40af);
+}
+.mgr-table-wrapper th {
+  padding: 14px 18px; text-align: left;
+  font-size: 13px; font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase; letter-spacing: .7px;
+  border-bottom: none;
+}
+.mgr-table-wrapper td {
+  padding: 14px 18px; border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle; font-size: 14px; color: var(--text-primary);
+}
+.mgr-table-wrapper tbody tr:last-child td { border-bottom: none; }
+.mgr-table-wrapper tbody tr:hover { background: #f8fafc; }
+
+/* ── Actions Grid ── */
+.mgr-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.mgr-action-list  { display: flex; flex-direction: column; gap: 10px; }
+.mgr-action-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: var(--radius-sm);
+  background: var(--surface-soft); border: 1px solid var(--border);
+  font-size: 14px; font-weight: 600; color: var(--text-secondary);
+  text-decoration: none; transition: all 0.15s;
+}
+.mgr-action-item:hover {
+  background: var(--rmf-blue-light); color: var(--rmf-blue);
+  border-color: #93c5fd; transform: translateX(2px);
+}
+.mgr-action-badge {
+  margin-left: auto; background: var(--rmf-red); color: #fff;
+  font-size: 12px; font-weight: 700;
+  padding: 3px 9px; border-radius: 99px;
+}
+
+/* ── Spinner ── */
+.spin { animation: spin 0.75s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .mgr-kpi-grid   { grid-template-columns: repeat(2,1fr); }
+  .mgr-chart-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .mgr-page         { padding: 16px; font-size: 14px; }
+  .mgr-kpi-grid     { grid-template-columns: 1fr 1fr; }
+  .mgr-actions-grid { grid-template-columns: 1fr; }
+  .mgr-header h1    { font-size: 20px; }
+}

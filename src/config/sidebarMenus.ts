@@ -21,8 +21,10 @@ import {
   Settings,
   Server,
   HomeIcon,
+  ClipboardPen,
 } from "lucide-react";
 import "@/styles/sidebar.css";
+import { TaskListCard } from "@/app/dashboard/components/staff/TaskListCard";
 /* ====================== TYPES ====================== */
 
 export type SidebarRole =
@@ -103,6 +105,12 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
         { label: "Supervisor Dashboard", href: "/dashboard/supervisor", icon: LayoutDashboard },
       ],
     },
+     {
+      title: "Performance and Tasks",
+      items: [
+        { label: "Task assignment", href: "/dashboard/supervisor/task-assignment", icon: ClipboardPen },
+      ],
+    },
     {
       title: "Attendance Oversight",
       items: [
@@ -110,6 +118,12 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
         { label: "Late & Early Logs", href: "/dashboard/supervisor/late-logs", icon: Clock },
         { label: "Missing Check-Ins", href: "/dashboard/supervisor/missing-checkins", icon: ShieldAlert },
         { label: "Correction Requests", href: "/dashboard/supervisor/corrections", icon: ClipboardCheck },
+      ],
+    },
+     {
+      title: "Request Management",
+      items: [
+        { label: "Leave Requests", href: "/dashboard/supervisor/leave-requests", icon: Calendar },
       ],
     },
   ],

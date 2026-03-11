@@ -1,228 +1,264 @@
 "use client";
 
 import Link from "next/link";
-import { ReactNode } from "react";
+import { useEffect, useState, useCallback, ReactNode } from "react";
 import {
-  LayoutDashboard,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
-  Users,
-  Clock,
-  DollarSign,
-  ShieldCheck,
-  BarChart3,
-  FileCheck,
-  ClipboardList,
-  LucideIcon,
+  LayoutDashboard, TrendingUp, TrendingDown,
+  AlertTriangle, Users, Clock, DollarSign,
+  ShieldCheck, BarChart3, FileCheck,
+  ClipboardList, LucideIcon, Loader2,
+  RefreshCw, Info, CheckCircle2,
 } from "lucide-react";
-
 import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  PieChart,
-  Pie,
-  Cell,
+  ResponsiveContainer, LineChart, Line,
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  PieChart, Pie, Cell, Legend,
 } from "recharts";
+import "@/styles/manager-dashboard.css";
 
-import "@/styles/supervisor-dashboard.css";
+/* ─── Types ─────────────────────────────────────────────── */
 
-/* ================= EXECUTIVE DATA (MOCK) ================= */
+type Insight = { type: "up" | "down" | "warning" | "danger" | "info"; message: string };
 
-const monthlyTrend = [
-  { month: "Jan", attendance: 91, productivity: 88 },
-  { month: "Feb", attendance: 89, productivity: 86 },
-  { month: "Mar", attendance: 92, productivity: 90 },
-  { month: "Apr", attendance: 94, productivity: 93 },
-];
+type DashboardData = {
+  kpis: {
+    totalWorkforce:   number;
+    totalOtHours:     number;
+    overtimeCost:     number;
+    complianceScore:  number;
+    pendingApprovals: number;
+  };
+  monthlyTrend:       { month: string; attendance: number; productivity: number }[];
+  overtimeCostByDept: { dept: string; cost: number }[];
+  complianceRisk:     { name: string; value: number }[];
+  insights:           Insight[];
+  generatedAt:        string;
+  date:               string;
+};
 
-const overtimeCost = [
-  { dept: "IT", cost: 4200 },
-  { dept: "Logistics", cost: 6800 },
-  { dept: "Finance", cost: 2100 },
-  { dept: "HR", cost: 1300 },
-];
-
-const complianceRisk = [
-  { name: "Compliant", value: 72 },
-  { name: "At Risk", value: 18 },
-  { name: "Critical", value: 10 },
-];
-
+const API    = "http://localhost/etms/controllers/manager";
 const COLORS = ["#22c55e", "#f59e0b", "#ef4444"];
 
-/* ================= PAGE ================= */
+const INSIGHT_META = {
+  up:      { icon: <TrendingUp   size={14} />, cls: "insight-up"      },
+  down:    { icon: <TrendingDown  size={14} />, cls: "insight-down"    },
+  warning: { icon: <AlertTriangle size={14} />, cls: "insight-warning" },
+  danger:  { icon: <AlertTriangle size={14} />, cls: "insight-danger"  },
+  info:    { icon: <Info          size={14} />, cls: "insight-info"    },
+};
+
+/* ─── Page ───────────────────────────────────────────────── */
 
 export default function ManagerDashboardPage() {
+
+  const [data,    setData]    = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState("");
+
+  const fetchData = useCallback(async () => {
+    setLoading(true); setError("");
+    try {
+      const res  = await fetch(`${API}/manager-dashboard.php`, { credentials: "include" });
+      if (res.status === 401) { setError("Session expired."); return; }
+      const json = await res.json();
+      if (json.success) setData(json);
+      else setError(json.error || "Failed to load dashboard.");
+    } catch {
+      setError("Unable to connect.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  /* Auto-refresh every 5 minutes */
+  useEffect(() => {
+    const id = setInterval(fetchData, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [fetchData]);
+
+  if (loading) return (
+    <div className="mgr-loading"><Loader2 size={24} className="spin" /> Loading dashboard...</div>
+  );
+  if (error) return <div className="mgr-error">{error}</div>;
+  if (!data)  return null;
+
+  const { kpis, monthlyTrend, overtimeCostByDept, complianceRisk, insights } = data;
+
   return (
-    <div className="space-y-8">
+    <div className="mgr-page space-y-6">
 
-      {/* ================= HEADER ================= */}
-      <div>
-        <h1 className="text-2xl font-semibold flex items-center gap-2">
-          <LayoutDashboard size={24} />
-          Executive Manager Dashboard
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Strategic workforce intelligence, financial impact analysis, and compliance oversight.
-        </p>
+      {/* HEADER */}
+      <div className="mgr-header">
+        <div>
+          <h1><LayoutDashboard size={22} /> Executive Manager Dashboard</h1>
+          <p>Strategic workforce intelligence · {data.date}</p>
+        </div>
+        <div className="mgr-header-right">
+          <span className="mgr-updated">Updated {data.generatedAt}</span>
+          <button className="mgr-refresh-btn" onClick={fetchData} disabled={loading}>
+            <RefreshCw size={14} className={loading ? "spin" : ""} /> Refresh
+          </button>
+        </div>
       </div>
 
-      {/* ================= EXECUTIVE KPIs ================= */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Users} title="Total Workforce" value="156" />
-        <StatCard icon={Clock} title="Total Overtime Hours" value="124h" />
-        <StatCard icon={DollarSign} title="Overtime Cost (Monthly)" value="$14,400" />
-        <StatCard icon={ShieldCheck} title="Overall Compliance Score" value="92%" />
+      {/* KPI CARDS */}
+      <div className="mgr-kpi-grid">
+        <KpiCard icon={Users}      title="Total Workforce"         value={kpis.totalWorkforce.toString()}            color="blue"   />
+        <KpiCard icon={Clock}      title="Overtime Hours (Month)"  value={`${kpis.totalOtHours}h`}                  color="amber"  />
+        <KpiCard icon={DollarSign} title="Overtime Cost (KES)"     value={`KES ${kpis.overtimeCost.toLocaleString()}`} color="red" />
+        <KpiCard icon={ShieldCheck}title="Compliance Score"        value={`${kpis.complianceScore}%`}               color="green"  />
       </div>
 
-      {/* ================= EXECUTIVE INSIGHTS ================= */}
-      <div className="dashboard-card executive-insight">
-        <h2 className="dashboard-section-title flex items-center gap-2">
-          <TrendingUp size={18} />
-          Executive Insights
-        </h2>
+      {/* EXECUTIVE INSIGHTS */}
+      {insights.length > 0 && (
+        <div className="mgr-card mgr-insights-card">
+          <h2 className="mgr-section-title"><TrendingUp size={16} /> Executive Insights</h2>
+          <ul className="mgr-insights-list">
+            {insights.map((ins, i) => (
+              <li key={i} className={`mgr-insight-item ${INSIGHT_META[ins.type].cls}`}>
+                {INSIGHT_META[ins.type].icon}
+                <span>{ins.message}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-        <ul className="space-y-2 text-sm">
-          <li>
-            <TrendingUp size={14} /> Attendance improved by <strong>+3%</strong> this quarter.
-          </li>
-          <li>
-            <TrendingDown size={14} /> Logistics department accounts for <strong>47%</strong> of overtime costs.
-          </li>
-          <li>
-            <AlertTriangle size={14} /> 10% of staff are flagged under <strong>critical compliance risk</strong>.
-          </li>
-        </ul>
-      </div>
+      {/* PENDING APPROVALS BANNER */}
+      {kpis.pendingApprovals > 0 && (
+        <Link href="/dashboard/manager/leave-approvals" className="mgr-pending-banner">
+          <FileCheck size={18} />
+          <span>
+            <strong>{kpis.pendingApprovals}</strong> leave request{kpis.pendingApprovals !== 1 ? "s" : ""} approved by supervisor and awaiting your final approval
+          </span>
+          <span className="mgr-banner-action">Review →</span>
+        </Link>
+      )}
 
-      {/* ================= ANALYTICS GRID ================= */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      {/* CHARTS ROW 1 */}
+      <div className="mgr-chart-grid">
 
-        {/* Attendance vs Productivity */}
-        <div className="dashboard-card lg:col-span-2">
-          <h2 className="dashboard-section-title">
-            Productivity vs Attendance Trend
-          </h2>
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={monthlyTrend}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line dataKey="attendance" strokeWidth={3} />
-              <Line dataKey="productivity" strokeWidth={3} />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="mgr-card mgr-chart-wide">
+          <h2 className="mgr-section-title">Productivity vs Attendance Trend</h2>
+          {monthlyTrend.length === 0 ? (
+            <div className="mgr-chart-empty">No data available</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={monthlyTrend}>
+                <XAxis dataKey="month" />
+                <YAxis domain={[0, 100]} unit="%" />
+                <Tooltip formatter={(v: number) => `${v}%`} />
+                <Legend />
+                <Line dataKey="attendance"   name="Attendance"   stroke="#2563eb" strokeWidth={3} dot={{ r: 5 }} />
+                <Line dataKey="productivity" name="Productivity"  stroke="#16a34a" strokeWidth={3} dot={{ r: 5 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
-        {/* Compliance Risk */}
-        <div className="dashboard-card">
-          <h2 className="dashboard-section-title">Compliance Risk Distribution</h2>
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart>
-              <Pie data={complianceRisk} dataKey="value" innerRadius={55} outerRadius={90}>
-                {complianceRisk.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i]} />
+        <div className="mgr-card">
+          <h2 className="mgr-section-title">Compliance Risk Distribution</h2>
+          {complianceRisk.every(d => d.value === 0) ? (
+            <div className="mgr-chart-empty">No data available</div>
+          ) : (
+            <>
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie data={complianceRisk} dataKey="value" innerRadius={55} outerRadius={90}>
+                    {complianceRisk.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="mgr-pie-legend">
+                {complianceRisk.map((d, i) => (
+                  <span key={d.name} className="mgr-legend-item">
+                    <span className="mgr-legend-dot" style={{ background: COLORS[i] }} />
+                    {d.name}: <strong>{d.value}</strong>
+                  </span>
                 ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+              </div>
+            </>
+          )}
         </div>
+
       </div>
 
-      {/* ================= COST ANALYSIS ================= */}
-      <div className="dashboard-card">
-        <h2 className="dashboard-section-title flex items-center gap-2">
-          <DollarSign size={18} />
-          Overtime Cost by Department
-        </h2>
-        <ResponsiveContainer width="100%" height={260}>
-          <BarChart data={overtimeCost}>
-            <XAxis dataKey="dept" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="cost" radius={[6,6,0,0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      {/* OVERTIME COST BY DEPT */}
+      <div className="mgr-card">
+        <h2 className="mgr-section-title"><DollarSign size={16} /> Overtime Cost by Department (This Month)</h2>
+        {overtimeCostByDept.length === 0 ? (
+          <div className="mgr-chart-empty">No overtime recorded this month</div>
+        ) : (
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={overtimeCostByDept}>
+              <XAxis dataKey="dept" />
+              <YAxis tickFormatter={v => `KES ${(v/1000).toFixed(0)}k`} />
+              <Tooltip formatter={(v: number) => `KES ${v.toLocaleString()}`} />
+              <Bar dataKey="cost" name="Overtime Cost" fill="#1a3a6b" radius={[6,6,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
-      {/* ================= ACTIONS ================= */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* ACTION SECTIONS */}
+      <div className="mgr-actions-grid">
 
         <Section title="Executive Actions">
-          <Action icon={FileCheck} label="Final Leave Approvals" href="/dashboard/manager/leave-approvals" />
-          <Action icon={ClipboardList} label="Disciplinary Confirmations" href="/dashboard/manager/disciplinary" />
-          <Action icon={ShieldCheck} label="Attendance Exemptions" href="/dashboard/manager/exemptions" />
+          <Action icon={FileCheck}    label="Final Leave Approvals"       href="/dashboard/manager/leave-approvals"  badge={kpis.pendingApprovals} />
+          <Action icon={ClipboardList}label="Disciplinary Confirmations"  href="/dashboard/manager/disciplinary" />
+          <Action icon={ShieldCheck}  label="Attendance Exemptions"       href="/dashboard/manager/exemptions" />
         </Section>
 
         <Section title="Reports & Export">
-          <Action icon={BarChart3} label="Monthly Performance Reports" href="/dashboard/manager/monthly-report" />
-          <Action icon={BarChart3} label="Department Comparison Reports" href="/dashboard/manager/department-report" />
-          <Action icon={FileCheck} label="Export PDF / Excel Summaries" href="/dashboard/manager/export" />
+          <Action icon={BarChart3} label="Monthly Performance Reports"    href="/dashboard/manager/monthly-report" />
+          <Action icon={BarChart3} label="Department Comparison Reports"  href="/dashboard/manager/department-report" />
+          <Action icon={FileCheck} label="Export PDF / Excel Summaries"   href="/dashboard/manager/export" />
         </Section>
 
       </div>
+
     </div>
   );
 }
 
-/* ================= COMPONENTS ================= */
+/* ─── Sub-components ─────────────────────────────────────── */
 
-function StatCard({
-  icon: Icon,
-  title,
-  value,
-}: {
-  icon: LucideIcon;
-  title: string;
-  value: string;
+function KpiCard({ icon: Icon, title, value, color }: {
+  icon: LucideIcon; title: string; value: string; color: string;
 }) {
   return (
-    <div className="dashboard-card flex items-center gap-4">
-      <Icon size={20} />
+    <div className={`mgr-card mgr-kpi-card mgr-kpi-${color}`}>
+      <div className={`mgr-kpi-icon icon-${color}`}><Icon size={20} /></div>
       <div>
-        <p className="text-sm text-muted-foreground">{title}</p>
-        <h3 className="text-xl font-semibold">{value}</h3>
+        <p className="mgr-kpi-label">{title}</p>
+        <h3 className="mgr-kpi-value">{value}</h3>
       </div>
     </div>
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="dashboard-card">
-      <h2 className="dashboard-section-title mb-3">{title}</h2>
-      <div className="grid gap-3">{children}</div>
+    <div className="mgr-card">
+      <h2 className="mgr-section-title mb-3">{title}</h2>
+      <div className="mgr-action-list">{children}</div>
     </div>
   );
 }
 
-function Action({
-  icon: Icon,
-  label,
-  href,
-}: {
-  icon: LucideIcon;
-  label: string;
-  href: string;
+function Action({ icon: Icon, label, href, badge }: {
+  icon: LucideIcon; label: string; href: string; badge?: number;
 }) {
   return (
-    <Link href={href} className="dashboard-action">
-      <Icon size={18} />
+    <Link href={href} className="mgr-action-item">
+      <Icon size={17} />
       <span>{label}</span>
+      {badge && badge > 0 && <span className="mgr-action-badge">{badge}</span>}
     </Link>
   );
 }
