@@ -117,7 +117,7 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
         { label: "Live Check-In Map", href: "/dashboard/supervisor/attendance-map", icon: MapPin },
         { label: "Late & Early Logs", href: "/dashboard/supervisor/late-logs", icon: Clock },
         { label: "Missing Check-Ins", href: "/dashboard/supervisor/missing-checkins", icon: ShieldAlert },
-        { label: "Correction Requests", href: "/dashboard/supervisor/corrections", icon: ClipboardCheck },
+        
       ],
     },
      {

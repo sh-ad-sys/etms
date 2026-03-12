@@ -1,217 +1,362 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
-  Search,
-  Edit2,
-  Trash2,
-  RotateCcw,
-  Plus,
-  Download,
+  Search, Edit2, Trash2, RotateCcw,
+  Plus, Download, Loader2, Users,
+  CheckCircle2, XCircle, AlertCircle, RefreshCw,
 } from "lucide-react";
 import "@/styles/admin-users.css";
 
+/* ─── Types ─────────────────────────────────────────────── */
+
 interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  status: "Active" | "Disabled";
+  id:           string;
+  employeeCode: string;
+  name:         string;
+  email:        string;
+  phone:        string;
+  role:         string;
+  roleId:       number | null;
+  department:   string;
+  status:       "Active" | "Suspended" | "Exited";
+  joinedOn:     string;
 }
 
+interface Role { id: number; name: string; }
+
+const API = "http://localhost/etms/controllers/admin";
+
+/* ─── Component ─────────────────────────────────────────── */
+
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<string[]>([]);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showInviteModal, setShowInviteModal] = useState(false);
+
+  const [users,       setUsers]       = useState<User[]>([]);
+  const [roles,       setRoles]       = useState<Role[]>([]);
+  const [total,       setTotal]       = useState(0);
+  const [totalPages,  setTotalPages]  = useState(1);
+  const [loading,     setLoading]     = useState(true);
+  const [actionLoad,  setActionLoad]  = useState(false);
+  const [error,       setError]       = useState("");
+  const [toast,       setToast]       = useState("");
+  const [exporting,   setExporting]   = useState(false);
+
+  /* Filters */
+  const [search,      setSearch]      = useState("");
+  const [roleFilter,  setRoleFilter]  = useState("");
+  const [statusFilter,setStatusFilter]= useState("");
+  const [page,        setPage]        = useState(1);
+  const perPage = 10;
+
+  /* Modals */
+  const [showEdit,    setShowEdit]    = useState(false);
+  const [showDelete,  setShowDelete]  = useState(false);
+  const [showInvite,  setShowInvite]  = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [page, setPage] = useState(1);
-  const perPage = 5;
 
-  useEffect(() => {
-    setUsers([
-      { id: "1", name: "John Mwangi", email: "john@royalmabati.co.ke", role: "Supervisor", status: "Active" },
-      { id: "2", name: "Grace Achieng", email: "grace@royalmabati.co.ke", role: "HR", status: "Disabled" },
-      { id: "3", name: "Peter Otieno", email: "peter@royalmabati.co.ke", role: "Manager", status: "Active" },
-      { id: "4", name: "Jane Njeri", email: "jane@royalmabati.co.ke", role: "Admin", status: "Active" },
-      { id: "5", name: "David Kimani", email: "david@royalmabati.co.ke", role: "Supervisor", status: "Active" },
-      { id: "6", name: "Mercy Atieno", email: "mercy@royalmabati.co.ke", role: "HR", status: "Active" },
-    ]);
-  }, []);
+  /* Edit form */
+  const [editName,   setEditName]   = useState("");
+  const [editEmail,  setEditEmail]  = useState("");
+  const [editPhone,  setEditPhone]  = useState("");
+  const [editRoleId, setEditRoleId] = useState<number | null>(null);
 
-  const filtered = users.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
-  );
+  /* Invite form */
+  const [invName,   setInvName]   = useState("");
+  const [invEmail,  setInvEmail]  = useState("");
+  const [invPhone,  setInvPhone]  = useState("");
+  const [invRoleId, setInvRoleId] = useState<number | null>(null);
+  const [invDept,   setInvDept]   = useState("");
 
-  const paginated = filtered.slice((page - 1) * perPage, page * perPage);
-  const totalPages = Math.ceil(filtered.length / perPage);
-
-  const toggleStatus = (id: string) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === id
-          ? { ...u, status: u.status === "Active" ? "Disabled" : "Active" }
-          : u
-      )
-    );
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 4000);
   };
 
-  const deleteUser = () => {
+  /* ── Fetch ── */
+  const fetchUsers = useCallback(async () => {
+    setLoading(true); setError("");
+    try {
+      const params = new URLSearchParams({
+        search, role: roleFilter, status: statusFilter,
+        page: String(page), perPage: String(perPage),
+      });
+      const res  = await fetch(`${API}/get-admin-users.php?${params}`, { credentials: "include" });
+      if (res.status === 401) { setError("Session expired."); return; }
+      const data = await res.json();
+      if (data.success) {
+        setUsers(data.users);
+        setRoles(data.roles || []);
+        setTotal(data.total);
+        setTotalPages(data.totalPages);
+      } else setError(data.error || "Failed to load users.");
+    } catch { setError("Unable to connect."); }
+    finally  { setLoading(false); }
+  }, [search, roleFilter, statusFilter, page]);
+
+  useEffect(() => { fetchUsers(); }, [fetchUsers]);
+
+  /* ── Action helper ── */
+  const doAction = async (payload: object): Promise<{ success: boolean; message?: string; error?: string }> => {
+    setActionLoad(true);
+    try {
+      const res  = await fetch(`${API}/admin-users-actions.php`, {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      return await res.json();
+    } catch { return { success: false, error: "Network error." }; }
+    finally  { setActionLoad(false); }
+  };
+
+  /* ── Toggle status ── */
+  const toggleStatus = async (user: User) => {
+    const newStatus = user.status === "Active" ? "SUSPENDED" : "ACTIVE";
+    const res = await doAction({ action: "toggle_status", userId: user.id, newStatus });
+    if (res.success) { showToast(res.message!); fetchUsers(); }
+    else setError(res.error || "Failed.");
+  };
+
+  /* ── Edit user ── */
+  const openEdit = (u: User) => {
+    setCurrentUser(u);
+    setEditName(u.name); setEditEmail(u.email);
+    setEditPhone(u.phone); setEditRoleId(u.roleId);
+    setShowEdit(true);
+  };
+  const submitEdit = async () => {
     if (!currentUser) return;
-    setUsers((prev) => prev.filter((u) => u.id !== currentUser.id));
-    setShowDeleteModal(false);
+    const res = await doAction({
+      action: "edit_user", userId: currentUser.id,
+      name: editName, email: editEmail, phone: editPhone, roleId: editRoleId,
+    });
+    if (res.success) { showToast(res.message!); setShowEdit(false); fetchUsers(); }
+    else setError(res.error || "Update failed.");
   };
 
-  const exportCSV = () => {
-    const csv =
-      "Name,Email,Role,Status\n" +
-      users.map((u) => `${u.name},${u.email},${u.role},${u.status}`).join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "users.csv";
-    a.click();
+  /* ── Delete ── */
+  const submitDelete = async () => {
+    if (!currentUser) return;
+    const res = await doAction({ action: "delete_user", userId: currentUser.id });
+    if (res.success) { showToast(res.message!); setShowDelete(false); fetchUsers(); }
+    else setError(res.error || "Delete failed.");
   };
 
+  /* ── Reset password ── */
+  const resetPassword = async (user: User) => {
+    if (!confirm(`Reset password for ${user.name}? A temporary password will be emailed.`)) return;
+    const res = await doAction({ action: "reset_password", userId: user.id });
+    if (res.success) showToast(res.message!);
+    else setError(res.error || "Reset failed.");
+  };
+
+  /* ── Invite ── */
+  const submitInvite = async () => {
+    const res = await doAction({
+      action: "invite_user", name: invName, email: invEmail,
+      phone: invPhone, roleId: invRoleId, department: invDept,
+    });
+    if (res.success) {
+      showToast(res.message!); setShowInvite(false);
+      setInvName(""); setInvEmail(""); setInvPhone("");
+      setInvRoleId(null); setInvDept("");
+      fetchUsers();
+    } else setError(res.error || "Invite failed.");
+  };
+
+  /* ── Export ── */
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const params = new URLSearchParams({ role: roleFilter, status: statusFilter });
+      const res    = await fetch(`${API}/export-admin-users.php?${params}`, { credentials: "include" });
+      const blob   = await res.blob();
+      const link   = document.createElement("a");
+      link.href     = URL.createObjectURL(blob);
+      link.download = `Royal_Mabati_Users_${new Date().toISOString().split("T")[0]}.xls`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch { alert("Export failed."); }
+    finally  { setExporting(false); }
+  };
+
+  /* ── Render ── */
   return (
     <div className="admin-users-container">
+
+      {/* TOAST */}
+      {toast && <div className="admin-toast">{toast}</div>}
+
+      {/* HEADER */}
       <div className="admin-users-header">
-        <h1>Users Management</h1>
-        <p>Royal Mabati Factory • Admin Panel</p>
+        <div>
+          <h1><Users size={22} /> Users Management</h1>
+          <p>Royal Mabati Factory · Admin Panel · {total} users</p>
+        </div>
+        <button className="au-refresh-btn" onClick={fetchUsers} disabled={loading}>
+          <RefreshCw size={14} className={loading ? "spin" : ""} />
+        </button>
       </div>
 
+      {/* CONTROLS */}
       <div className="admin-users-controls">
         <div className="search-box">
-          <Search size={18} />
+          <Search size={15} />
           <input
-            type="text"
-            placeholder="Search users..."
+            placeholder="Search by name, email or ID..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
           />
         </div>
-
+        <div className="au-filter-box">
+          <select value={roleFilter} onChange={e => { setRoleFilter(e.target.value); setPage(1); }}>
+            <option value="">All Roles</option>
+            {roles.map(r => <option key={r.id} value={r.name}>{r.name}</option>)}
+          </select>
+        </div>
+        <div className="au-filter-box">
+          <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}>
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="exited">Exited</option>
+          </select>
+        </div>
         <div className="right-actions">
-          <button onClick={exportCSV} className="export-btn">
-            <Download size={16} /> Export
+          <button onClick={handleExport} className="export-btn" disabled={exporting}>
+            {exporting ? <Loader2 size={14} className="spin" /> : <Download size={14} />}
+            Export
           </button>
-          <button onClick={() => setShowInviteModal(true)} className="invite-btn">
-            <Plus size={16} /> Invite User
+          <button onClick={() => setShowInvite(true)} className="invite-btn">
+            <Plus size={14} /> Invite User
           </button>
         </div>
       </div>
 
+      {/* ERROR */}
+      {error && (
+        <div className="au-error">
+          <AlertCircle size={14} /> {error}
+          <button onClick={() => setError("")}>✕</button>
+        </div>
+      )}
+
+      {/* TABLE */}
       <div className="table-card">
-        <table className="users-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginated.map((u) => (
-              <tr key={u.id}>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(u.id)}
-                    onChange={(e) =>
-                      setSelected((prev) =>
-                        e.target.checked
-                          ? [...prev, u.id]
-                          : prev.filter((id) => id !== u.id)
-                      )
-                    }
-                  />
-                </td>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-                <td>
-                  <span className={`role-badge role-${u.role.toLowerCase()}`}>
-                    {u.role}
-                  </span>
-                </td>
-                <td>
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={u.status === "Active"}
-                      onChange={() => toggleStatus(u.id)}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                </td>
-                <td>
-                  <div className="action-buttons">
-                    <button
-                      onClick={() => {
-                        setCurrentUser(u);
-                        setShowEditModal(true);
-                      }}
-                      className="edit"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => alert("Password reset sent")}
-                      className="reset"
-                    >
-                      <RotateCcw size={16} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCurrentUser(u);
-                        setShowDeleteModal(true);
-                      }}
-                      className="delete"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
+        {loading ? (
+          <div className="au-loading"><Loader2 size={20} className="spin" /> Loading users...</div>
+        ) : (
+          <table className="users-table">
+            <thead>
+              <tr>
+                <th>Emp Code</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Joined</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map(u => (
+                <tr key={u.id} className={`user-row-${u.status.toLowerCase()}`}>
+                  <td><span className="au-emp-code">{u.employeeCode || "—"}</span></td>
+                  <td>
+                    <div className="au-name-cell">
+                      <div className="au-avatar">
+                        {u.name.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase()}
+                      </div>
+                      <div>
+                        <span className="au-name">{u.name}</span>
+                        <span className="au-phone">{u.phone}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{u.email}</td>
+                  <td>
+                    <span className={`role-badge role-${u.role.toLowerCase().replace(/\s+/g,"-")}`}>
+                      {u.role}
+                    </span>
+                  </td>
+                  <td>{u.department}</td>
+                  <td><span className="au-joined">{u.joinedOn}</span></td>
+                  <td>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={u.status === "Active"}
+                        onChange={() => toggleStatus(u)}
+                        disabled={u.status === "Exited"}
+                      />
+                      <span className="slider" />
+                    </label>
+                  </td>
+                  <td>
+                    <div className="action-buttons">
+                      <button className="edit"  onClick={() => openEdit(u)} title="Edit"><Edit2 size={15} /></button>
+                      <button className="reset" onClick={() => resetPassword(u)} title="Reset Password"><RotateCcw size={15} /></button>
+                      <button className="delete" disabled={u.status === "Exited"}
+                        onClick={() => { setCurrentUser(u); setShowDelete(true); }} title="Deactivate">
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {users.length === 0 && (
+                <tr><td colSpan={8} className="au-empty">No users found.</td></tr>
+              )}
+            </tbody>
+          </table>
+        )}
 
         {/* Pagination */}
         <div className="pagination">
-          <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-            Prev
-          </button>
-          <span>
-            Page {page} of {totalPages}
-          </span>
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-          >
-            Next
-          </button>
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Prev</button>
+          <span>Page {page} of {totalPages} · {total} total</span>
+          <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Next →</button>
         </div>
       </div>
 
-      {/* DELETE MODAL */}
-      {showDeleteModal && (
+      {/* EDIT MODAL */}
+      {showEdit && currentUser && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Confirm Delete</h3>
-            <p>Are you sure you want to delete {currentUser?.name}?</p>
+            <h3><Edit2 size={16} /> Edit User</h3>
+            <label>Full Name</label>
+            <input value={editName}   onChange={e => setEditName(e.target.value)}   placeholder="Full Name" />
+            <label>Email</label>
+            <input value={editEmail}  onChange={e => setEditEmail(e.target.value)}  placeholder="Email" type="email" />
+            <label>Phone</label>
+            <input value={editPhone}  onChange={e => setEditPhone(e.target.value)}  placeholder="Phone" />
+            <label>Role</label>
+            <select value={editRoleId ?? ""} onChange={e => setEditRoleId(Number(e.target.value))}>
+              <option value="">— Select Role —</option>
+              {roles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+            </select>
             <div className="modal-actions">
-              <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
-              <button className="danger" onClick={deleteUser}>
-                Delete
+              <button onClick={() => setShowEdit(false)}>Cancel</button>
+              <button className="primary" onClick={submitEdit} disabled={actionLoad}>
+                {actionLoad ? <Loader2 size={14} className="spin" /> : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE MODAL */}
+      {showDelete && currentUser && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3><Trash2 size={16} /> Deactivate User</h3>
+            <p>Are you sure you want to deactivate <strong>{currentUser.name}</strong>?
+               Their account will be set to <strong>Exited</strong> and they will lose access.</p>
+            <div className="modal-actions">
+              <button onClick={() => setShowDelete(false)}>Cancel</button>
+              <button className="danger" onClick={submitDelete} disabled={actionLoad}>
+                {actionLoad ? <Loader2 size={14} className="spin" /> : "Deactivate"}
               </button>
             </div>
           </div>
@@ -219,25 +364,48 @@ export default function AdminUsersPage() {
       )}
 
       {/* INVITE MODAL */}
-      {showInviteModal && (
+      {showInvite && (
         <div className="modal-overlay">
-          <div className="modal">
-            <h3>Invite New User</h3>
-            <input placeholder="Full Name" />
-            <input placeholder="Email Address" />
-            <select>
-              <option>Supervisor</option>
-              <option>HR</option>
-              <option>Manager</option>
-              <option>Admin</option>
-            </select>
+          <div className="modal modal-wide">
+            <h3><Plus size={16} /> Invite New User</h3>
+            <div className="modal-grid">
+              <div>
+                <label>Full Name *</label>
+                <input value={invName}  onChange={e => setInvName(e.target.value)}  placeholder="Full Name" />
+              </div>
+              <div>
+                <label>Email Address *</label>
+                <input value={invEmail} onChange={e => setInvEmail(e.target.value)} placeholder="Email" type="email" />
+              </div>
+              <div>
+                <label>Phone</label>
+                <input value={invPhone} onChange={e => setInvPhone(e.target.value)} placeholder="+254 7XX XXX XXX" />
+              </div>
+              <div>
+                <label>Department</label>
+                <input value={invDept}  onChange={e => setInvDept(e.target.value)}  placeholder="Department" />
+              </div>
+              <div className="modal-full">
+                <label>Role *</label>
+                <select value={invRoleId ?? ""} onChange={e => setInvRoleId(Number(e.target.value))}>
+                  <option value="">— Select Role —</option>
+                  {roles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                </select>
+              </div>
+            </div>
+            <p className="modal-note">
+              A temporary password will be generated and sent to the email address provided.
+            </p>
             <div className="modal-actions">
-              <button onClick={() => setShowInviteModal(false)}>Cancel</button>
-              <button>Send Invite</button>
+              <button onClick={() => setShowInvite(false)}>Cancel</button>
+              <button className="primary" onClick={submitInvite} disabled={actionLoad}>
+                {actionLoad ? <Loader2 size={14} className="spin" /> : "Send Invite"}
+              </button>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
