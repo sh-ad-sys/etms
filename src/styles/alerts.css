@@ -1,243 +1,222 @@
-/* ===============================
-   SECURITY ALERTS PAGE
-   Professional Modern UI
-=================================*/
+/* ================================================================
+   Royal Mabati Factory – Security Alerts Page
+   Brand: Deep Blue #1a3a6b · Steel Blue #2563eb · Factory Red #dc2626
+   ================================================================ */
 
-.security-alerts-page {
-  padding: 40px;
-  background: #f8fafc;
-  min-height: 100vh;
-  font-family: "Inter", sans-serif;
+:root {
+  --rmf-blue:       #1a3a6b;
+  --rmf-blue-mid:   #2563eb;
+  --rmf-blue-light: #dbeafe;
+  --rmf-red:        #dc2626;
+  --rmf-amber:      #f59e0b;
+  --surface:        #ffffff;
+  --surface-soft:   #f8fafc;
+  --border:         #e2e8f0;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow:         0 1px 6px rgba(26,58,107,.08);
+  --shadow-md:      0 4px 20px rgba(26,58,107,.13);
 }
 
-/* ===============================
-   HEADER
-=================================*/
+/* ── Page ── */
+.alerts-page {
+  padding: 28px 32px;
+  max-width: 920px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  display: flex; flex-direction: column; gap: 20px;
+}
 
+/* ── Header ── */
 .alerts-header {
-  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--rmf-blue-light);
 }
-
 .alerts-header h1 {
-  font-size: 26px;
-  font-weight: 700;
-  color: #0f172a;
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 24px; font-weight: 800;
+  color: var(--rmf-blue); margin: 0; letter-spacing: -0.3px;
 }
-
+.alerts-header h1 svg { color: var(--rmf-red); }
 .alerts-header p {
-  color: #64748b;
-  font-size: 14px;
-  margin-top: 6px;
+  font-size: 12px; color: var(--text-muted);
+  margin: 5px 0 0; font-weight: 500;
 }
 
-/* ===============================
-   SEARCH BAR
-=================================*/
-
-.alerts-search {
-  position: relative;
-  max-width: 400px;
-  margin-bottom: 30px;
+/* ── Summary badges ── */
+.alerts-summary {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.summary-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px; border-radius: 99px;
+  font-size: 13px; font-weight: 700;
+}
+.badge-open {
+  background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;
+}
+.badge-high {
+  background: #fff7ed; color: #92400e; border: 1px solid #fed7aa;
 }
 
-.alerts-search input {
-  width: 100%;
-  padding: 12px 14px 12px 40px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  background: white;
+/* ── Toolbar ── */
+.alerts-toolbar {
+  display: flex; align-items: center; gap: 12px;
+}
+.alerts-filter {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); box-shadow: var(--shadow);
+  color: var(--text-muted); flex: 1; max-width: 240px;
+  transition: border-color 0.2s;
+}
+.alerts-filter:focus-within {
+  border-color: var(--rmf-blue-mid);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+.alerts-filter select {
+  border: none; outline: none; font-size: 13px;
+  color: var(--text-secondary); background: transparent;
+  cursor: pointer; font-family: inherit; flex: 1;
 }
 
-.alerts-search input:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+.refresh-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--rmf-blue), var(--rmf-blue-mid));
+  color: #fff; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37,99,235,.3); flex-shrink: 0;
 }
-
-.alerts-search svg {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #94a3b8;
+.refresh-btn:hover:not(:disabled) {
+  transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,.4);
 }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ===============================
-   ALERT CARD
-=================================*/
-
-.alert-card {
-  background: white;
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  transition: all 0.25s ease;
-  border: 1px solid transparent;
+/* ── Error / Loading / Empty ── */
+.alerts-error {
+  background: #fee2e2; color: #991b1b;
+  padding: 13px 18px; border-radius: var(--radius-sm);
+  border: 1px solid #fca5a5; font-size: 13px; font-weight: 500;
 }
-
-.alert-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-  border-color: #e2e8f0;
+.alerts-loading {
+  text-align: center; padding: 60px;
+  color: var(--text-muted); font-size: 14px; font-style: italic;
 }
-
-/* ===============================
-   ALERT LEFT SECTION
-=================================*/
-
-.alert-info {
-  display: flex;
-  gap: 14px;
-}
-
-.alert-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-}
-
-/* Priority Backgrounds */
-.priority-high {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.priority-medium {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.priority-low {
-  background: #dcfce7;
-  color: #16a34a;
-}
-
-.alert-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-.alert-description {
-  font-size: 13px;
-  color: #64748b;
-  margin-top: 6px;
-  max-width: 600px;
-}
-
-/* ===============================
-   META INFO
-=================================*/
-
-.alert-meta {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #94a3b8;
-  display: flex;
-  gap: 15px;
-}
-
-/* ===============================
-   RIGHT SIDE ACTIONS
-=================================*/
-
-.alert-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* Status Badge */
-
-.alert-status {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.status-new {
-  background: #e0f2fe;
-  color: #0284c7;
-}
-
-.status-reviewed {
-  background: #e2e8f0;
-  color: #475569;
-}
-
-.status-resolved {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-/* Button */
-
-.alert-btn {
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.alert-btn-review {
-  background: #2563eb;
-  color: white;
-}
-
-.alert-btn-review:hover {
-  background: #1e40af;
-}
-
-.alert-btn-resolve {
-  background: #16a34a;
-  color: white;
-}
-
-.alert-btn-resolve:hover {
-  background: #15803d;
-}
-
-/* ===============================
-   EMPTY STATE
-=================================*/
-
 .alerts-empty {
-  text-align: center;
-  margin-top: 60px;
-  color: #64748b;
-  font-size: 14px;
+  text-align: center; padding: 60px;
+  color: var(--text-muted); font-size: 14px; font-weight: 500;
 }
 
-/* ===============================
-   RESPONSIVE
-=================================*/
+/* ── Alert list ── */
+.alerts-list {
+  display: flex; flex-direction: column; gap: 14px;
+}
 
-@media (max-width: 768px) {
-  .security-alerts-page {
-    padding: 20px;
-  }
+/* ── Alert card ── */
+.alert-card {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 20px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.alert-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.alert-card:not(.alert-resolved)::before {
+  background: linear-gradient(90deg, var(--rmf-red), #f87171);
+}
+.alert-card.alert-resolved::before {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+.alert-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.alert-card.alert-resolved { opacity: 0.72; }
+.alert-card.alert-resolved:hover { opacity: 1; }
 
-  .alert-card {
-    flex-direction: column;
-    gap: 15px;
-  }
+/* ── Left block ── */
+.alert-left {
+  display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 0;
+}
 
-  .alert-actions {
-    justify-content: flex-start;
-  }
+/* ── Severity indicator icon box ── */
+.severity-indicator {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+}
+.severity-low    { background: #f0fdf4; color: #16a34a; }
+.severity-medium { background: #fff7ed; color: #d97706; }
+.severity-high   { background: #fff1f2; color: var(--rmf-red); }
+
+/* ── Alert text ── */
+.alert-title {
+  font-size: 15px; font-weight: 700;
+  color: var(--rmf-blue); margin: 0 0 5px;
+}
+.alert-description {
+  font-size: 13px; color: var(--text-secondary);
+  margin: 0 0 10px; line-height: 1.6;
+}
+.alert-meta {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-muted); font-weight: 500;
+  flex-wrap: wrap;
+}
+.alert-meta svg { flex-shrink: 0; }
+
+/* Resolved-at timestamp (replaces inline style) */
+.resolved-at {
+  color: #16a34a; font-weight: 600;
+}
+
+/* ── Right block ── */
+.alert-right {
+  display: flex; flex-direction: column;
+  align-items: flex-end; gap: 10px; flex-shrink: 0;
+}
+
+/* ── Alert status badge ── */
+.alert-status {
+  display: inline-flex; align-items: center;
+  padding: 4px 12px; border-radius: 99px;
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.status-open     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.status-resolved { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+
+/* ── Resolve button ── */
+.resolve-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff; border: none;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(22,163,74,.3);
+  transition: all 0.2s; font-family: inherit; white-space: nowrap;
+}
+.resolve-btn:hover:not(:disabled) {
+  transform: translateY(-1px); box-shadow: 0 4px 14px rgba(22,163,74,.4);
+}
+.resolve-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ── Spinner ── */
+.spin { animation: spin 0.75s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .alerts-page  { padding: 16px; }
+  .alert-card   { flex-direction: column; gap: 14px; }
+  .alert-right  { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+  .alerts-filter{ max-width: 100%; flex: 1; }
 }

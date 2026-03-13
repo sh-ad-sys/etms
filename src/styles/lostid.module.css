@@ -1,57 +1,168 @@
-:root{
-  --bg-1:#f8fafc;
-  --muted:#64748b;
-  --card:#ffffff;
-  --accent:#2563eb;
-  --accent-dark:#1e3a8a;
+/* ================================================================
+   Royal Mabati Factory – Report Lost ID
+   Brand: Deep Blue #1a3a6b · Steel Blue #2563eb · Factory Red #dc2626
+   ================================================================ */
+
+/* ── Page ── */
+.page {
+  padding: 28px 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  display: flex; flex-direction: column; gap: 24px;
+  font-size: 14px; position: relative;
 }
 
-.page{
-  padding:28px 20px;
-  background: linear-gradient(180deg,var(--bg-1), #f1f8ff);
-  min-height:100vh;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-  color:#0b1220;
+/* ── Header ── */
+.header {
+  padding-bottom: 20px;
+  border-bottom: 2px solid #dbeafe;
+}
+.header h1 {
+  font-size: 24px; font-weight: 800;
+  color: #1a3a6b; margin: 0; letter-spacing: -0.3px;
+}
+.lead {
+  font-size: 13px; color: #94a3b8;
+  margin: 5px 0 0; font-weight: 500;
 }
 
-.header{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:18px; }
-.header h1{ font-size:22px; margin:0; font-weight:700; }
-.lead{ color:var(--muted); margin:4px 0 0 0; }
+/* ── Grid wrapper ── */
+.grid {
+  display: flex; flex-direction: column; gap: 20px;
+}
 
-.grid{ display:grid; grid-template-columns: 1fr; gap:18px; align-items:start; justify-items:center; }
+/* ── Card ── */
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 32px 36px;
+  box-shadow: 0 2px 10px rgba(26,58,107,.07);
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #1a3a6b, #2563eb, #f59e0b);
+}
 
-.card{ background:var(--card); border-radius:14px; padding:18px; box-shadow: 0 14px 40px rgba(2,6,23,0.06); width:100%; max-width:760px; margin:0 auto; }
+/* ── Form ── */
+.form {
+  display: flex; flex-direction: column; gap: 20px;
+}
 
-.form{ display:flex; flex-direction:column; gap:12px; }
-.row{ display:flex; flex-direction:column; }
-.rowSplit{ display:flex; gap:12px; }
-.label{ font-size:18px; color:var(--accent-dark); margin-bottom:8px; font-weight:700; line-height:1.15; }
-.required{ color:#dc2626; margin-left:8px; font-weight:800; }
-.input{ padding:10px 12px; border-radius:8px; border:1px solid rgba(15,23,42,0.06); background:#fff; font-size:14px; }
-.textarea{ min-height:110px; padding:10px 12px; border-radius:8px; border:1px solid rgba(15,23,42,0.06); background:#fff; }
-.fileInput{ font-size:13px; margin-top:10px; display:block; }
+/* ── Field rows ── */
+.row {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.rowSplit {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+}
 
-.submit{ background: linear-gradient(90deg,var(--accent), #1e40af); color:#fff; padding:10px 14px; border-radius:10px; border:none; font-weight:700; cursor:pointer; }
-.submit:disabled{ opacity:0.6; cursor:not-allowed; }
+/* ── Labels ── */
+.label {
+  font-size: 11px; font-weight: 700;
+  color: #94a3b8; text-transform: uppercase; letter-spacing: .6px;
+  display: flex; align-items: center; gap: 4px;
+}
+.required { color: #dc2626; }
 
-.side{ position:relative; }
-.sideCard{ background:var(--card); border-radius:12px; padding:14px; box-shadow:0 10px 30px rgba(2,6,23,0.06); }
-.sideCard h3{ margin:0 0 10px 0; font-size:16px; }
-.reportList{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+/* ── Inputs ── */
+.input,
+.textarea,
+.fileInput {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid #e2e8f0; border-radius: 9px;
+  font-size: 13px; color: #0f172a;
+  background: #f8fafc; outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.input:focus,
+.textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+  background: #ffffff;
+}
+.input::placeholder,
+.textarea::placeholder { color: #94a3b8; }
 
-.reportItem{ display:flex; justify-content:space-between; gap:8px; align-items:flex-start; padding:10px; border-radius:10px; background: linear-gradient(180deg,#fff,#fbfdff); cursor:pointer; border:1px solid rgba(15,23,42,0.03); }
-.reportItem:hover{ box-shadow: 0 8px 30px rgba(2,6,23,0.06); transform: translateY(-2px); }
-.reportTitle{ font-weight:800; font-size:14px; }
-.small{ font-weight:600; color:var(--muted); font-size:12px; margin-left:6px; }
-.reportMeta{ color:var(--muted); font-size:13px; margin-top:6px; }
-.status{ padding:6px 12px; border-radius:999px; font-weight:700; font-size:13px; background:linear-gradient(90deg,#eef2ff,#e0f2ff); color:var(--accent); }
+.textarea {
+  resize: vertical; min-height: 100px; line-height: 1.6;
+}
 
-.detailPanel{ margin-top:12px; padding:12px; border-radius:10px; background:linear-gradient(180deg,#fff,#fcfeff); border:1px solid rgba(15,23,42,0.04); box-shadow:0 8px 30px rgba(2,6,23,0.06); }
+/* ── File input ── */
+.fileInput {
+  padding: 9px 12px; cursor: pointer;
+  color: #475569;
+}
+.fileInput::-webkit-file-upload-button {
+  padding: 6px 14px; margin-right: 12px;
+  background: linear-gradient(135deg, #1a3a6b, #2563eb);
+  color: #fff; border: none; border-radius: 6px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: opacity 0.15s;
+}
+.fileInput::-webkit-file-upload-button:hover { opacity: 0.9; }
 
-.preview{ margin-top:10px; display:flex; gap:10px; align-items:center; }
-.previewImage{ width:84px; height:84px; object-fit:cover; border-radius:8px; border:1px solid rgba(15,23,42,0.04); box-shadow:0 8px 20px rgba(2,6,23,0.06); }
-.previewNote{ color:var(--muted); font-size:12px; }
+/* ── Evidence preview ── */
+.preview {
+  margin-top: 12px;
+  border: 1px solid #e2e8f0; border-radius: 10px;
+  overflow: hidden; background: #f8fafc;
+}
+.previewImage {
+  width: 100%; height: auto;
+  display: block; object-fit: contain;
+  max-height: 240px;
+}
+.previewNote {
+  padding: 7px 12px;
+  font-size: 11px; color: #94a3b8;
+  font-weight: 500; text-align: center;
+  border-top: 1px solid #e2e8f0;
+}
 
-.toast{ position:fixed; right:20px; bottom:20px; background:#0b1220; color:#fff; padding:12px 16px; border-radius:12px; box-shadow:0 10px 30px rgba(2,6,23,0.2); }
+/* ── Submit button ── */
+.submit {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px 28px;
+  background: linear-gradient(135deg, #1a3a6b, #2563eb);
+  color: #fff; border: none; border-radius: 9px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 3px 12px rgba(37,99,235,.35);
+  transition: all 0.2s; white-space: nowrap;
+  font-family: inherit;
+}
+.submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37,99,235,.45);
+}
+.submit:disabled {
+  opacity: 0.55; cursor: not-allowed; transform: none;
+}
 
-@media (max-width:900px){ .grid{ grid-template-columns: 1fr; } .rowSplit{ flex-direction:column; } .side{ order:2; } }
+/* ── Success toast ── */
+.toast {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+  display: flex; align-items: center; gap: 9px;
+  padding: 13px 22px; border-radius: 12px;
+  background: linear-gradient(135deg, #166534, #15803d);
+  color: #fff; font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(22,163,74,.4);
+  animation: toastUp 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes toastUp {
+  from { opacity:0; transform:translateY(16px) scale(.95); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .page     { padding: 16px; }
+  .card     { padding: 22px 18px; }
+  .rowSplit { grid-template-columns: 1fr; }
+  .submit   { width: 100%; }
+}

@@ -1,155 +1,189 @@
-/* ===============================
-   PAGE BACKGROUND
-================================ */
+/* ================================================================
+   Royal Mabati Factory – Security / Devices
+   Brand: Deep Blue #1a3a6b · Steel Blue #2563eb · Factory Red #dc2626
+   ================================================================ */
+
+:root {
+  --rmf-blue:       #1a3a6b;
+  --rmf-blue-mid:   #2563eb;
+  --rmf-blue-light: #dbeafe;
+  --rmf-red:        #dc2626;
+  --surface:        #ffffff;
+  --surface-soft:   #f8fafc;
+  --border:         #e2e8f0;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow:         0 1px 6px rgba(26,58,107,.08);
+  --shadow-md:      0 4px 20px rgba(26,58,107,.13);
+}
+
+/* ── Page ── */
 .security-page {
-  min-height: 100vh;
-  padding: 40px;
-  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-  font-family: "Inter", sans-serif;
-}
-
-/* ===============================
-   HEADER
-================================ */
-.security-header h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.security-header p {
-  font-size: 13px;
-  color: #64748b;
-  margin-top: 4px;
-}
-
-/* ===============================
-   SEARCH BAR
-================================ */
-.security-search {
-  background: #ffffff;
-  padding: 14px 18px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-top: 24px;
-  transition: all 0.2s ease;
-}
-
-.security-search input {
-  border: none;
-  outline: none;
-  width: 100%;
+  padding: 28px 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', system-ui, sans-serif;
   font-size: 14px;
-  color: #1e293b;
+  display: flex; flex-direction: column; gap: 0;
 }
 
+/* ── Header ── */
+.security-header {
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--rmf-blue-light);
+  margin-bottom: 22px;
+}
+.security-header h1 {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 24px; font-weight: 800;
+  color: var(--rmf-blue); margin: 0; letter-spacing: -0.3px;
+}
+.security-header h1 svg { color: var(--rmf-red); }
+.security-header p {
+  font-size: 12px; color: var(--text-muted);
+  margin: 5px 0 0; font-weight: 500;
+}
+
+/* ── Search bar ── */
+.security-search {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); box-shadow: var(--shadow);
+  max-width: 380px;
+  color: var(--text-muted);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 24px;
+}
 .security-search:focus-within {
-  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.2);
+  border-color: var(--rmf-blue-mid);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+.security-search input {
+  border: none; outline: none; font-size: 13px;
+  color: var(--text-primary); background: transparent; width: 100%;
+  font-family: inherit;
+}
+.security-search input::placeholder { color: var(--text-muted); }
+
+/* ── Error box ── */
+.security-error {
+  background: #fee2e2; color: #991b1b;
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  border: 1px solid #fca5a5; font-size: 13px; font-weight: 500;
+  margin-bottom: 20px;
 }
 
-/* ===============================
-   DEVICE CARD
-================================ */
+/* ── Device list grid ── */
+.device-list {
+  display: grid; gap: 16px;
+}
+
+/* ── Device card ── */
 .device-card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
-  transition: all 0.25s ease;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 20px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-
+.device-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--rmf-blue), var(--rmf-blue-mid));
+}
 .device-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* ===============================
-   DEVICE LEFT SECTION
-================================ */
+/* Active device — stronger blue top border */
+.device-card.device-current::before {
+  background: linear-gradient(90deg, #16a34a, #15803d);
+}
+
+/* ── Left info block ── */
 .device-info {
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
+  display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 0;
 }
 
+/* ── Icon box ── */
 .device-icon {
-  padding: 12px;
-  background: #eff6ff;
-  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  background: var(--rmf-blue-light); color: var(--rmf-blue);
+  box-shadow: 0 2px 8px rgba(26,58,107,.1);
+}
+.device-card.device-current .device-icon {
+  background: #dcfce7; color: #166534;
 }
 
+/* ── Device name row ── */
 .device-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e293b;
+  font-size: 15px; font-weight: 700; color: var(--rmf-blue);
+  margin: 0 0 10px; display: flex; align-items: center;
+  gap: 8px; flex-wrap: wrap;
 }
 
+/* "Current Device" green pill — replaces the inline style */
+.current-pill {
+  font-size: 11px; font-weight: 700;
+  background: #22c55e; color: #fff;
+  padding: 3px 10px; border-radius: 6px;
+  letter-spacing: .2px;
+}
+
+/* ── Meta rows ── */
 .device-meta {
-  font-size: 13px;
-  color: #64748b;
-  margin-top: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.device-meta > div {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-muted); font-weight: 500;
+}
+.device-meta svg { flex-shrink: 0; }
+
+/* ── Right side ── */
+.device-right {
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
 }
 
-/* ===============================
-   STATUS BADGES
-================================ */
+/* ── Status badges ── */
 .status-badge {
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 99px;
+  font-size: 12px; font-weight: 700; white-space: nowrap;
 }
-
 .status-active {
-  background: #dcfce7;
-  color: #15803d;
+  background: #dcfce7; color: #166534; border: 1px solid #86efac;
+}
+.status-history {
+  background: var(--rmf-blue-light); color: var(--rmf-blue);
+  border: 1px solid #93c5fd;
 }
 
-.status-revoked {
-  background: #fee2e2;
-  color: #b91c1c;
+/* ── Loading / empty ── */
+.device-loading {
+  text-align: center; padding: 60px;
+  color: var(--text-muted); font-size: 14px; font-style: italic;
+}
+.device-empty {
+  text-align: center; padding: 60px;
+  color: var(--text-muted); font-size: 14px; font-weight: 500;
 }
 
-/* ===============================
-   REVOKE BUTTON
-================================ */
-.revoke-btn {
-  background: transparent;
-  border: none;
-  font-size: 13px;
-  font-weight: 500;
-  color: #dc2626;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.revoke-btn:hover {
-  color: #991b1b;
-  text-decoration: underline;
-}
-
-/* ===============================
-   RESPONSIVE
-================================ */
-@media (max-width: 768px) {
-  .device-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-  }
-
-  .security-page {
-    padding: 20px;
-  }
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .security-page    { padding: 16px; }
+  .security-search  { max-width: 100%; }
+  .device-card      { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .device-right     { width: 100%; }
+  .status-badge     { width: 100%; justify-content: center; }
 }

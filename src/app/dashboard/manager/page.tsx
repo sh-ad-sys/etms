@@ -7,7 +7,7 @@ import {
   AlertTriangle, Users, Clock, DollarSign,
   ShieldCheck, BarChart3, FileCheck,
   ClipboardList, LucideIcon, Loader2,
-  RefreshCw, Info, CheckCircle2,
+  RefreshCw, Info,
 } from "lucide-react";
 import {
   ResponsiveContainer, LineChart, Line,
@@ -149,7 +149,7 @@ export default function ManagerDashboardPage() {
               <LineChart data={monthlyTrend}>
                 <XAxis dataKey="month" />
                 <YAxis domain={[0, 100]} unit="%" />
-                <Tooltip formatter={(v: number) => `${v}%`} />
+                <Tooltip formatter={(v) => v != null ? `${v}%` : ""} />
                 <Legend />
                 <Line dataKey="attendance"   name="Attendance"   stroke="#2563eb" strokeWidth={3} dot={{ r: 5 }} />
                 <Line dataKey="productivity" name="Productivity"  stroke="#16a34a" strokeWidth={3} dot={{ r: 5 }} />
@@ -198,7 +198,7 @@ export default function ManagerDashboardPage() {
             <BarChart data={overtimeCostByDept}>
               <XAxis dataKey="dept" />
               <YAxis tickFormatter={v => `KES ${(v/1000).toFixed(0)}k`} />
-              <Tooltip formatter={(v: number) => `KES ${v.toLocaleString()}`} />
+              <Tooltip formatter={(v) => v != null ? `KES ${(v as number).toLocaleString()}` : ""} />
               <Bar dataKey="cost" name="Overtime Cost" fill="#1a3a6b" radius={[6,6,0,0]} />
             </BarChart>
           </ResponsiveContainer>

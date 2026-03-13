@@ -70,13 +70,31 @@ export default function StaffDashboard() {
   const [geoStatus, setGeoStatus] = useState<"checking" | "inside" | "outside" | "unavailable">("checking");
 
   /* ── Check-in state ── */
-  const [verifying,   setVerifying]   = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [lastAction,  setLastAction]  = useState<"check_in" | "check_out" | null>(null);
+  const [verifying,      setVerifying]      = useState(false);
+  const [showSuccess,    setShowSuccess]    = useState(false);
+  const [lastAction,     setLastAction]     = useState<"check_in" | "check_out" | null>(null);
+  const [checkInTime,    setCheckInTime]    = useState<string | null>(null);
+  const [checkOutTime,   setCheckOutTime]   = useState<string | null>(null);
+  const [statusLoading,  setStatusLoading]  = useState(true);
 
   const toast = useCallback((msg: string, type: "success" | "error" = "success") => {
     setStatusMessage(msg); setToastType(type); setShowToast(true);
     setTimeout(() => setShowToast(false), 3500);
+  }, []);
+
+  /* ── Fetch today's check-in status from server ── */
+  const fetchCheckInStatus = useCallback(async () => {
+    setStatusLoading(true);
+    try {
+      const res  = await fetch(`${BASE}/attendance/get-checkin-status.php`, { credentials: "include" });
+      const data = await res.json();
+      if (data.success) {
+        setLastAction(data.lastAction);
+        setCheckInTime(data.checkInTime);
+        setCheckOutTime(data.checkOutTime);
+      }
+    } catch { /* silent */ }
+    finally  { setStatusLoading(false); }
   }, []);
 
   /* ── Fetch QR session from server ── */
@@ -97,6 +115,7 @@ export default function StaffDashboard() {
 
   /* Auto-refresh QR every 30s */
   useEffect(() => { fetchSession(); }, [fetchSession, refreshKey]);
+  useEffect(() => { fetchCheckInStatus(); }, [fetchCheckInStatus]);
   useEffect(() => {
     const id = setInterval(() => {
       setCountdown(prev => {
@@ -206,6 +225,7 @@ export default function StaffDashboard() {
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 2500);
         setRefreshKey(k => k + 1);
+        fetchCheckInStatus(); // sync button state with server
         toast(data.action === "check_in" ? "Checked in successfully!" : "Checked out successfully!");
       } else {
         toast(data.error || "Attendance failed.", "error");
@@ -280,15 +300,25 @@ export default function StaffDashboard() {
             <button
               className={`qr-confirm-btn ${verifying ? "loading" : ""} ${lastAction === "check_in" ? "checkout" : "checkin"}`}
               onClick={confirmPresence}
-              disabled={verifying || !session || geoStatus === "outside"}
+              disabled={verifying || !session || geoStatus === "outside" || statusLoading}
             >
-              {verifying
-                ? <><Loader2 size={15} className="spin" /> Verifying...</>
-                : lastAction === "check_in"
-                  ? <><LogOut size={15} /> Check Out</>
-                  : <><CheckCircle size={15} /> Check In</>
+              {statusLoading
+                ? <><Loader2 size={15} className="spin" /> Loading...</>
+                : verifying
+                  ? <><Loader2 size={15} className="spin" /> Verifying...</>
+                  : lastAction === "check_in"
+                    ? <><LogOut size={15} /> Check Out</>
+                    : <><CheckCircle size={15} /> Check In</>
               }
             </button>
+
+            {/* Show today's check-in / check-out times */}
+            {(checkInTime || checkOutTime) && (
+              <div className="qr-times-row">
+                {checkInTime  && <span className="qr-time-in">✓ In {checkInTime}</span>}
+                {checkOutTime && <span className="qr-time-out">✓ Out {checkOutTime}</span>}
+              </div>
+            )}
 
             {geoStatus === "outside" && (
               <p className="qr-geo-warn">You must be inside the attendance zone to check in.</p>

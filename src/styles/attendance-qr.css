@@ -1,0 +1,251 @@
+/* ================================================================
+   Royal Mabati Factory – Attendance QR Verification Page
+   Brand: Deep Blue #1a3a6b · Steel Blue #2563eb · Factory Red #dc2626
+   ================================================================ */
+
+:root {
+  --rmf-blue:       #1a3a6b;
+  --rmf-blue-mid:   #2563eb;
+  --rmf-blue-light: #dbeafe;
+  --rmf-red:        #dc2626;
+  --rmf-amber:      #f59e0b;
+  --surface:        #ffffff;
+  --surface-soft:   #f8fafc;
+  --border:         #e2e8f0;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --radius:         16px;
+  --radius-sm:      10px;
+  --shadow:         0 2px 12px rgba(26,58,107,.08);
+  --shadow-md:      0 8px 32px rgba(26,58,107,.14);
+  --shadow-lg:      0 20px 60px rgba(26,58,107,.2);
+}
+
+/* ── Page background ── */
+.qr-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 40%, #fefce8 100%);
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Page header ── */
+.qr-page-header {
+  margin-bottom: 32px;
+}
+.qr-page-header h1 {
+  font-size: 28px; font-weight: 800;
+  color: var(--rmf-blue); margin: 0 0 4px;
+  letter-spacing: -0.5px;
+}
+.qr-page-header p {
+  font-size: 14px; color: var(--text-muted); margin: 0; font-weight: 500;
+}
+
+/* ── Center the card ── */
+.qr-page-center {
+  display: flex; justify-content: center; align-items: flex-start;
+  flex: 1;
+}
+
+/* ── Main card ── */
+.qr-card {
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 40px 36px;
+  width: 100%; max-width: 440px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.qr-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, var(--rmf-blue), var(--rmf-blue-mid), var(--rmf-amber));
+}
+
+/* ── Geo pill ── */
+.qr-geo-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 99px;
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 22px;
+}
+.qr-geo-inside      { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.qr-geo-outside     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.qr-geo-checking    { background: var(--rmf-blue-light); color: var(--rmf-blue); border: 1px solid #93c5fd; }
+.qr-geo-unavailable { background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); }
+
+/* ── Refresh hint ── */
+.qr-refresh-hint {
+  font-size: 13px; color: var(--text-muted); margin: 0 0 18px;
+}
+
+/* ── QR code box ── */
+.qr-code-box {
+  position: relative;
+  background: var(--surface);
+  padding: 18px;
+  border-radius: 20px;
+  border: 2px solid var(--rmf-blue-light);
+  box-shadow: 0 4px 20px rgba(26,58,107,.1),
+              0 0 0 6px rgba(37,99,235,.05);
+  margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.qr-code-box canvas { display: block; border-radius: 8px; }
+
+/* Logo overlay in center of QR */
+.qr-logo-center {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px; height: 50px;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; pointer-events: none;
+}
+
+/* QR loading state */
+.qr-code-loading {
+  width: 220px; height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+}
+.qr-code-error {
+  width: 220px; height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text-muted); font-style: italic;
+}
+
+/* ── Countdown ── */
+.qr-countdown-text {
+  font-size: 13px; color: var(--text-muted); margin: 0 0 14px;
+}
+.qr-countdown-text b { color: var(--rmf-blue-mid); font-weight: 800; }
+
+/* ── Today's check-in / out times ── */
+.qr-times-row {
+  display: flex; gap: 10px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 20px;
+}
+.qr-time-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 14px; border-radius: 99px;
+  font-size: 12px; font-weight: 700;
+}
+.qr-time-in  { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.qr-time-out { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+/* ── Confirm button ── */
+.qr-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center;
+  gap: 9px; padding: 15px;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+.qr-btn-checkin {
+  background: linear-gradient(135deg, var(--rmf-blue), var(--rmf-blue-mid));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(37,99,235,.35);
+}
+.qr-btn-checkin:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(37,99,235,.45);
+}
+.qr-btn-checkout {
+  background: linear-gradient(135deg, var(--rmf-red), #b91c1c);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(220,38,38,.35);
+}
+.qr-btn-checkout:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(220,38,38,.45);
+}
+.qr-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* ── Outside zone warning ── */
+.qr-outside-msg {
+  font-size: 13px; color: #991b1b; font-weight: 500;
+  background: #fff1f2; border: 1px solid #fca5a5;
+  padding: 10px 16px; border-radius: var(--radius-sm);
+  width: 100%; text-align: center; margin-top: 8px;
+}
+
+/* ── Outside zone placeholder ── */
+.qr-zone-blocked {
+  padding: 48px 24px; color: var(--text-muted);
+  font-size: 14px; font-weight: 500; line-height: 1.6;
+  width: 100%;
+}
+.qr-zone-blocked svg { color: var(--rmf-red); margin: 0 auto 12px; display: block; }
+
+/* ── Secure label ── */
+.qr-secure {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-top: 16px;
+  font-size: 12px; color: var(--text-muted); font-weight: 500;
+}
+.qr-secure svg { color: #16a34a; }
+
+/* ── Live clock ── */
+.qr-clock {
+  margin-top: 20px; font-size: 13px;
+  color: var(--text-muted); font-variant-numeric: tabular-nums;
+  font-weight: 500; letter-spacing: 0.5px;
+}
+
+/* ── Success overlay ── */
+.qr-success-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  animation: qrFadeIn 0.2s ease;
+}
+.qr-success-card {
+  background: var(--surface);
+  border-radius: 28px; padding: 52px 44px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: qrPop 0.35s cubic-bezier(.34,1.56,.64,1);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.qr-success-icon-wrap {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: #dcfce7;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 10px rgba(22,163,74,.1);
+}
+.qr-success-icon-wrap svg { color: #16a34a; }
+.qr-success-card h3 {
+  font-size: 22px; font-weight: 800; color: #166534; margin: 0;
+}
+.qr-success-card p  {
+  font-size: 14px; color: var(--text-muted); margin: 0;
+}
+
+@keyframes qrPop    { from { opacity:0; transform:scale(.82); } to { opacity:1; transform:scale(1); } }
+@keyframes qrFadeIn { from { opacity:0; }                       to { opacity:1; } }
+
+/* ── Spinner ── */
+.spin { animation: spin 0.75s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .qr-page       { padding: 20px 14px; }
+  .qr-card       { padding: 28px 20px; border-radius: 22px; }
+  .qr-page-header h1 { font-size: 22px; }
+  .qr-btn        { font-size: 14px; padding: 13px; }
+}
