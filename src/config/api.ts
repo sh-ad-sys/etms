@@ -1,6 +1,7 @@
 // Centralized API configuration for JWT authentication
 
-const API_BASE_URL = 'http://localhost/etms/controllers';
+// Use environment variable for production, localhost for development
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost/etms/controllers';
 
 export const API_ENDPOINTS = {
   login: `${API_BASE_URL}/login.php`,
