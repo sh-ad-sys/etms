@@ -212,7 +212,7 @@ export default function AdminDevicesPage() {
 
 /* COMPONENTS */
 
-function getIcon(type) {
+function getIcon(type: string) {
   switch (type) {
     case "Desktop":
       return <Monitor size={16} />;
