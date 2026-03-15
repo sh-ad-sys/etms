@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { API_ENDPOINTS, setToken } from "@/config/api";
 const FULL_TEXT = "Royal Mabati ETMS";
 
 type StatusType = "success" | "error" | null;
@@ -16,7 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusType>(null);
   const [showStatus, setShowStatus] = useState(false);
 
@@ -57,76 +58,75 @@ const [statusMessage, setStatusMessage] = useState<string | null>(null);
   /* ===============================
      LOGIN (SINGLE DASHBOARD REDIRECT)
   =============================== */
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setLoading(true);
-  setShowStatus(false);
-  setStatusMessage(null); // reset previous message
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setShowStatus(false);
+    setStatusMessage(null); // reset previous message
 
-  try {
-    const response = await fetch(
-      "http://localhost/etms/controllers/login.php",
-      {
+    try {
+      const response = await fetch(API_ENDPOINTS.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // send session cookie
         body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Show backend error message in popup
+        setStatus("error");
+        setStatusMessage(data.error || "Login failed");
+        setShowStatus(true);
+        setTimeout(() => {
+          setShowStatus(false);
+          setStatusMessage(null);
+          setStatus(null);
+        }, 3000);
+        return;
       }
-    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      // Show backend error message in popup
-      setStatus("error");
-      setStatusMessage(data.error || "Login failed");
+      // Successful login
+      setStatus("success");
+      setStatusMessage("Login successful");
       setShowStatus(true);
+      console.log("Role received from backend:", data.user.role);
+
+      // Store JWT token
+      if (data.token) {
+        setToken(data.token);
+      }
+
+      // Redirect based on role
+      const role = data.user?.role?.trim().toUpperCase();
+
       setTimeout(() => {
-  setShowStatus(false);
-  setStatusMessage(null);
-  setStatus(null);
-}, 3000);
-      return;
+        switch (role) {
+          case "ADMIN":
+            router.push("/dashboard/admin");
+            break;
+          case "HR":
+            router.push("/dashboard/hr");
+            break;
+          case "MANAGER":
+            router.push("/dashboard/manager");
+            break;
+          case "SUPERVISOR":
+            router.push("/dashboard/supervisor");
+            break;
+          default:
+            router.push("/dashboard"); // staff
+        }
+      }, 1200);
+    } catch (error) {
+      setStatus("error");
+      setStatusMessage("An unexpected error occurred");
+      setShowStatus(true);
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-
-    // Successful login
-    setStatus("success");
-    setStatusMessage("Login successful");
-    setShowStatus(true);
-    console.log("Role received from backend:", data.user.role);
-
-    // Redirect based on role
-  // Get role safely
-const role = data.user.role?.trim().toUpperCase();
-
-setTimeout(() => {
-  switch (role) {
-    case "ADMIN":
-      router.push("/dashboard/admin");
-      break;
-    case "HR":
-      router.push("/dashboard/hr");
-      break;
-    case "MANAGER":
-      router.push("/dashboard/manager");
-      break;
-    case "SUPERVISOR":
-      router.push("/dashboard/supervisor");
-      break;
-    default:
-      router.push("/dashboard"); // staff
-  }
-}, 1200);
-
-  } catch (error) {
-    setStatus("error");
-    setStatusMessage("An unexpected error occurred");
-    setShowStatus(true);
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex bg-white relative">
@@ -209,40 +209,39 @@ setTimeout(() => {
               />
             </div>
 
-            
-             <div>
-  <label className="text-sm font-medium text-slate-700">
-    Password <span className="text-red-500">*</span>
-  </label>
+            <div>
+              <label className="text-sm font-medium text-slate-700">
+                Password <span className="text-red-500">*</span>
+              </label>
 
-  <div className="relative">
-    <input
-      type={showPassword ? "text" : "password"}
-      required
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      className="w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-blue-800"
-      placeholder="Enter password"
-    />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-blue-800"
+                  placeholder="Enter password"
+                />
 
-    <button
-      type="button"
-      onClick={() => setShowPassword(!showPassword)}
-      className="absolute inset-y-0 right-3 flex items-center text-slate-500"
-    >
-      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-    </button>
-  </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-3 flex items-center text-slate-500"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
 
-  <div className="mt-2 text-right">
-    <Link
-      href="/forgot-password"
-      className="text-sm text-blue-800 hover:underline"
-    >
-      Forgot password?
-    </Link>
-  </div>
-</div>
+              <div className="mt-2 text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-blue-800 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
 
             <button
               type="submit"
@@ -263,29 +262,51 @@ setTimeout(() => {
          CENTER SUCCESS / ERROR ICON
       =============================== */}
       {showStatus && (
-  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="bg-white p-12 rounded-2xl shadow-2xl flex flex-col items-center justify-center animate-scaleIn">
-      {status === "success" ? (
-        <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
-          <svg className="w-10 h-10 text-blue-700" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-      ) : (
-        <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
-          <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-12 rounded-2xl shadow-2xl flex flex-col items-center justify-center animate-scaleIn">
+            {status === "success" ? (
+              <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
+                <svg
+                  className="w-10 h-10 text-blue-700"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+                <svg
+                  className="w-10 h-10 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+            )}
+
+            {/* Display backend message */}
+            <p
+              className={`mt-4 text-center font-semibold ${status === "success" ? "text-blue-700" : "text-red-600"}`}
+            >
+              {statusMessage}
+            </p>
+          </div>
         </div>
       )}
-
-      {/* Display backend message */}
-      <p className={`mt-4 text-center font-semibold ${status === "success" ? "text-blue-700" : "text-red-600"}`}>
-        {statusMessage}
-      </p>
-    </div>
-  </div>
-)}
       <style jsx>{`
         .animate-scaleIn {
           animation: scaleIn 0.3s ease-out forwards;

@@ -9,6 +9,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import "@/styles/topbar.css";
+import { API_ENDPOINTS, getAuthHeaders, removeToken } from "@/config/api";
 
 /* ─── Types ─────────────────────────────────────────────── */
 
@@ -32,6 +33,7 @@ interface Notification {
   created_at?: string;
 }
 
+// Legacy PHP API endpoint
 const API = "http://localhost/etms/controllers";
 
 function timeAgo(dateStr?: string): string {
@@ -79,16 +81,18 @@ export default function Topbar({ onToggleSidebar }: { onToggleSidebar: () => voi
 
   /* ── Fetch user ── */
   useEffect(() => {
-    fetch(`${API}/topbar-user.php`, { credentials: "include" })
+    fetch(API_ENDPOINTS.profile, { headers: getAuthHeaders() })
       .then(r => r.json())
-      .then(d => { if (d.success) setUser(d.user); });
+      .then(d => { if (d.success) setUser(d.user); })
+      .catch(err => console.error("Failed to load user:", err));
   }, []);
 
   /* ── Fetch notifications ── */
   const loadNotifications = useCallback(() => {
-    fetch(`${API}/notifications.php`, { credentials: "include" })
+    fetch(API_ENDPOINTS.notifications, { headers: getAuthHeaders() })
       .then(r => r.json())
-      .then(d => setNotifications(d.notifications || []));
+      .then(d => setNotifications(d.notifications || []))
+      .catch(err => console.error("Failed to load notifications:", err));
   }, []);
 
   useEffect(() => {
@@ -120,7 +124,8 @@ export default function Topbar({ onToggleSidebar }: { onToggleSidebar: () => voi
   /* ── Logout ── */
   const logout = async () => {
     try {
-      await fetch(`${API}/logout.php`, { credentials: "include" });
+      await fetch(API_ENDPOINTS.logout, { method: "POST", headers: getAuthHeaders() });
+      removeToken();
       setDropdownOpen(false);
       router.push("/");
     } catch (e) { console.error("Logout failed:", e); }
