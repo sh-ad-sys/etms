@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
@@ -17,38 +17,41 @@ import {
 
 import "@/styles/status.css";
 
-/* ─── Types ─────────────────────────────────────────────── */
-
 type LeaveStatusType = "All" | "Pending" | "Approved" | "Rejected";
 
 type Leave = {
-  id:                  string;
-  type:                string;
-  startDate:           string;
-  endDate:             string;
-  days:                number;
-  reason:              string;
-  status:              "Pending" | "Approved" | "Rejected";
-  supervisorApproval:  string;
-  managerApproval:     string;
-  supervisorRemarks:   string;
-  hasDocument:         boolean;
-  appliedOn:           string;
-  reviewedOn:          string | null;
-  reviewedBy:          string | null;
+  id: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+  days: number;
+  reason: string;
+  status: "Pending" | "Approved" | "Rejected";
+  supervisorApproval: string;
+  managerApproval: string;
+  hrApproval: string;
+  supervisorRemarks: string;
+  hasDocument: boolean;
+  appliedOn: string;
+  reviewedOn: string | null;
+  reviewedBy: string | null;
 };
 
 type Summary = {
-  total:    number;
+  total: number;
   approved: number;
-  pending:  number;
+  pending: number;
   rejected: number;
 };
 
 const API = "http://localhost/etms/controllers/leave";
 
 const fmt = (d: string) =>
-  new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  new Date(d).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 
 const approvalColor = (val: string) => {
   if (val === "Approved") return { background: "#dcfce7", color: "#166534" };
@@ -56,29 +59,31 @@ const approvalColor = (val: string) => {
   return { background: "#fef9c3", color: "#854d0e" };
 };
 
-/* ─── Component ─────────────────────────────────────────── */
-
 export default function LeaveStatusPage() {
-
-  const [leaves,   setLeaves]   = useState<Leave[]>([]);
-  const [summary,  setSummary]  = useState<Summary>({ total: 0, approved: 0, pending: 0, rejected: 0 });
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState("");
-  const [search,   setSearch]   = useState("");
-  const [filter,   setFilter]   = useState<LeaveStatusType>("All");
+  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [summary, setSummary] = useState<Summary>({ total: 0, approved: 0, pending: 0, rejected: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<LeaveStatusType>("All");
   const [expanded, setExpanded] = useState<string | null>(null);
-
-  /* ── Fetch ── */
 
   const fetchLeaves = useCallback(async () => {
     setLoading(true);
     setError("");
+
     try {
       const res = await fetch(`${API}/get-leave-status.php`, { credentials: "include" });
-      if (res.status === 401) { setError("Session expired. Please log in again."); return; }
+
+      if (res.status === 401) {
+        setError("Session expired. Please log in again.");
+        return;
+      }
+
       const data = await res.json();
+
       if (data.success) {
-        setLeaves(data.leaves   || []);
+        setLeaves(data.leaves || []);
         setSummary(data.summary || { total: 0, approved: 0, pending: 0, rejected: 0 });
       } else {
         setError(data.error || "Failed to load leave records.");
@@ -90,64 +95,74 @@ export default function LeaveStatusPage() {
     }
   }, []);
 
-  useEffect(() => { fetchLeaves(); }, [fetchLeaves]);
+  useEffect(() => {
+    fetchLeaves();
+  }, [fetchLeaves]);
 
-  /* ── Filter + search ── */
-
-  const filtered = useMemo(() =>
-    leaves
-      .filter((l) => filter === "All" || l.status === filter)
-      .filter((l) => l.type.toLowerCase().includes(search.toLowerCase())),
+  const filtered = useMemo(
+    () =>
+      leaves
+        .filter((leave) => filter === "All" || leave.status === filter)
+        .filter((leave) => leave.type.toLowerCase().includes(search.toLowerCase())),
     [leaves, filter, search]
   );
 
-  /* ── Render ── */
-
   return (
     <div className="leave-status-page">
-
-      {/* HEADER */}
       <div className="leave-header">
-        <h1><CalendarCheck size={22} /> Leave Status</h1>
+        <h1>
+          <CalendarCheck size={22} /> Leave Status
+        </h1>
         <p>Dashboard / Leave / Status</p>
       </div>
 
-      {/* SUMMARY CARDS */}
       <div className="leave-summary">
         <div className="summary-card">
-          <div className="summary-icon icon-blue"><Clock size={18} /></div>
-          <div><h3>{summary.total}</h3><p>Total Applications</p></div>
+          <div className="summary-icon icon-blue">
+            <Clock size={18} />
+          </div>
+          <div>
+            <h3>{summary.total}</h3>
+            <p>Total Applications</p>
+          </div>
         </div>
         <div className="summary-card">
-          <div className="summary-icon icon-green"><CheckCircle size={18} /></div>
-          <div><h3>{summary.approved}</h3><p>Approved</p></div>
+          <div className="summary-icon icon-green">
+            <CheckCircle size={18} />
+          </div>
+          <div>
+            <h3>{summary.approved}</h3>
+            <p>Approved</p>
+          </div>
         </div>
         <div className="summary-card">
-          <div className="summary-icon icon-yellow"><Clock size={18} /></div>
-          <div><h3>{summary.pending}</h3><p>Pending</p></div>
+          <div className="summary-icon icon-yellow">
+            <Clock size={18} />
+          </div>
+          <div>
+            <h3>{summary.pending}</h3>
+            <p>Pending</p>
+          </div>
         </div>
         <div className="summary-card">
-          <div className="summary-icon icon-red"><XCircle size={18} /></div>
-          <div><h3>{summary.rejected}</h3><p>Rejected</p></div>
+          <div className="summary-icon icon-red">
+            <XCircle size={18} />
+          </div>
+          <div>
+            <h3>{summary.rejected}</h3>
+            <p>Rejected</p>
+          </div>
         </div>
       </div>
 
-      {/* CONTROLS */}
       <div className="leave-controls">
-
         <div className="filter-tabs">
           {(["All", "Pending", "Approved", "Rejected"] as LeaveStatusType[]).map((item) => (
-            <button
-              key={item}
-              className={filter === item ? "active" : ""}
-              onClick={() => setFilter(item)}
-            >
+            <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>
               {item}
               {item !== "All" && (
                 <span className={`tab-count tab-${item.toLowerCase()}`}>
-                  {item === "Approved" ? summary.approved
-                   : item === "Pending" ? summary.pending
-                   : summary.rejected}
+                  {item === "Approved" ? summary.approved : item === "Pending" ? summary.pending : summary.rejected}
                 </span>
               )}
             </button>
@@ -168,20 +183,16 @@ export default function LeaveStatusPage() {
             <RefreshCw size={15} className={loading ? "spin" : ""} />
           </button>
         </div>
-
       </div>
 
-      {/* ERROR */}
       {error && <div className="status-error">{error}</div>}
 
-      {/* LOADING */}
       {loading && (
         <div className="status-loading">
           <Loader2 size={20} className="spin" /> Loading leave records...
         </div>
       )}
 
-      {/* TABLE */}
       {!loading && (
         <div className="leave-table-wrapper">
           <table className="leave-table">
@@ -199,10 +210,7 @@ export default function LeaveStatusPage() {
             <tbody>
               {filtered.map((leave) => (
                 <>
-                  <tr
-                    key={leave.id}
-                    className={`leave-row ${expanded === leave.id ? "row-expanded" : ""}`}
-                  >
+                  <tr key={leave.id} className={`leave-row ${expanded === leave.id ? "row-expanded" : ""}`}>
                     <td>
                       <span className="leave-type-label">{leave.type}</span>
                       {leave.hasDocument && (
@@ -213,39 +221,34 @@ export default function LeaveStatusPage() {
                     </td>
                     <td>{fmt(leave.startDate)}</td>
                     <td>{fmt(leave.endDate)}</td>
-                    <td><strong>{leave.days}</strong></td>
+                    <td>
+                      <strong>{leave.days}</strong>
+                    </td>
                     <td>{fmt(leave.appliedOn)}</td>
                     <td>
                       <span className={`status-badge ${leave.status.toLowerCase()}`}>
-                        {leave.status === "Pending"  && <Clock size={12} />}
+                        {leave.status === "Pending" && <Clock size={12} />}
                         {leave.status === "Approved" && <CheckCircle size={12} />}
                         {leave.status === "Rejected" && <XCircle size={12} />}
                         {leave.status}
                       </span>
                     </td>
                     <td>
-                      <button
-                        className="expand-btn"
-                        onClick={() => setExpanded(expanded === leave.id ? null : leave.id)}
-                      >
+                      <button className="expand-btn" onClick={() => setExpanded(expanded === leave.id ? null : leave.id)}>
                         {expanded === leave.id ? "Hide" : "View"}
                       </button>
                     </td>
                   </tr>
 
-                  {/* EXPANDED DETAIL ROW */}
                   {expanded === leave.id && (
                     <tr key={`${leave.id}-detail`} className="detail-row">
                       <td colSpan={7}>
                         <div className="detail-panel">
-
-                          {/* Reason */}
                           <div className="detail-item">
                             <span className="detail-label">Reason</span>
                             <p>{leave.reason}</p>
                           </div>
 
-                          {/* Approval chain */}
                           <div className="detail-item">
                             <span className="detail-label">
                               <ShieldCheck size={13} /> Approval Chain
@@ -253,27 +256,27 @@ export default function LeaveStatusPage() {
                             <div className="approval-chain">
                               <span className="approval-step">
                                 Supervisor
-                                <span
-                                  className="approval-badge"
-                                  style={approvalColor(leave.supervisorApproval)}
-                                >
+                                <span className="approval-badge" style={approvalColor(leave.supervisorApproval)}>
                                   {leave.supervisorApproval}
                                 </span>
                               </span>
-                              <span className="approval-arrow">→</span>
+                              <span className="approval-arrow">-&gt;</span>
                               <span className="approval-step">
                                 Manager
-                                <span
-                                  className="approval-badge"
-                                  style={approvalColor(leave.managerApproval)}
-                                >
+                                <span className="approval-badge" style={approvalColor(leave.managerApproval)}>
                                   {leave.managerApproval}
+                                </span>
+                              </span>
+                              <span className="approval-arrow">-&gt;</span>
+                              <span className="approval-step">
+                                HR
+                                <span className="approval-badge" style={approvalColor(leave.hrApproval)}>
+                                  {leave.hrApproval}
                                 </span>
                               </span>
                             </div>
                           </div>
 
-                          {/* Supervisor remarks */}
                           {leave.supervisorRemarks && (
                             <div className="detail-item">
                               <span className="detail-label">
@@ -283,7 +286,6 @@ export default function LeaveStatusPage() {
                             </div>
                           )}
 
-                          {/* Reviewed by */}
                           {leave.reviewedBy && (
                             <div className="detail-item">
                               <span className="detail-label">
@@ -291,11 +293,10 @@ export default function LeaveStatusPage() {
                               </span>
                               <p>
                                 {leave.reviewedBy}
-                                {leave.reviewedOn ? ` · ${fmt(leave.reviewedOn)}` : ""}
+                                {leave.reviewedOn ? ` | ${fmt(leave.reviewedOn)}` : ""}
                               </p>
                             </div>
                           )}
-
                         </div>
                       </td>
                     </tr>
@@ -305,13 +306,9 @@ export default function LeaveStatusPage() {
             </tbody>
           </table>
 
-          {filtered.length === 0 && !error && (
-            <div className="empty-state">No leave records found.</div>
-          )}
-
+          {filtered.length === 0 && !error && <div className="empty-state">No leave records found.</div>}
         </div>
       )}
-
     </div>
   );
 }

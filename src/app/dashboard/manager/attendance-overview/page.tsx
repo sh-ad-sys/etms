@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import "@/styles/manager-attendance-overview.css";
@@ -8,7 +8,7 @@ import {
   Filter, Wifi,
 } from "lucide-react";
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type AttendanceStatus = "Present" | "Late" | "Absent" | "On Leave" | "Outside";
 
@@ -37,7 +37,7 @@ const STATUS_COLORS: Record<AttendanceStatus, string> = {
   "Outside":  "outside",
 };
 
-/* ─── Component ─────────────────────────────────────────── */
+/* â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function ManagerAttendanceOverview() {
 
@@ -52,7 +52,7 @@ export default function ManagerAttendanceOverview() {
   const [date,       setDate]       = useState("");
   const [asOf,       setAsOf]       = useState("");
 
-  /* ── Fetch ── */
+  /* â”€â”€ Fetch â”€â”€ */
   const fetchData = useCallback(async () => {
     setLoading(true); setError("");
     try {
@@ -84,7 +84,7 @@ export default function ManagerAttendanceOverview() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  /* ── Client-side search filter ── */
+  /* â”€â”€ Client-side search filter â”€â”€ */
   const filtered = useMemo(() =>
     records.filter(r =>
       r.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -94,7 +94,7 @@ export default function ManagerAttendanceOverview() {
     [records, search]
   );
 
-  /* ── Render ── */
+  /* â”€â”€ Render â”€â”€ */
   return (
     <div className="manager-overview-container">
 
@@ -102,17 +102,7 @@ export default function ManagerAttendanceOverview() {
       <div className="manager-header">
         <div>
           <h1><Calendar size={22} /> Attendance Overview</h1>
-          <p>Monitor workforce attendance across departments · {date}</p>
-        </div>
-        <div className="manager-header-right">
-          {asOf && (
-            <span className="manager-asof">
-              <Wifi size={11} /> Updated {asOf}
-            </span>
-          )}
-          <button className="manager-refresh-btn" onClick={fetchData} disabled={loading}>
-            <RefreshCw size={14} className={loading ? "spin" : ""} />
-          </button>
+          <p>Monitor workforce attendance across departments Â· {date}</p>
         </div>
       </div>
 

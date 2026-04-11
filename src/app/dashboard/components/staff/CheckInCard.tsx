@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,9 +23,6 @@ export function CheckInCard() {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  };
 
   return (
     <Card className="bg-linear-to-br
@@ -49,7 +46,6 @@ export function CheckInCard() {
           {/* Current Time */}
           <div className="text-center py-4">
             <div className="text-4xl font-bold mb-1">{formatTime(currentTime)}</div>
-            <div className="text-blue-100 text-sm">{formatDate(currentTime)}</div>
           </div>
 
           {checkedIn ? (
@@ -104,3 +100,4 @@ export function CheckInCard() {
     </Card>
   );
 }
+

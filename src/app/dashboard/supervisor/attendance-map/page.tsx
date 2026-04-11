@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import "@/styles/attendance-map.css";
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type StaffStatus = "On Site" | "Late" | "Absent" | "Outside";
 type FilterStatus = "All" | StaffStatus;
@@ -41,7 +41,7 @@ const STATUS_CONFIG: Record<StaffStatus, { color: string; icon: React.ReactNode 
   "Outside": { color: "outside", icon: <Navigation   size={13} /> },
 };
 
-/* ─── Component ─────────────────────────────────────────── */
+/* â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function AttendanceMapPage() {
 
@@ -54,7 +54,7 @@ export default function AttendanceMapPage() {
   const [asOf,     setAsOf]     = useState("");
   const [date,     setDate]     = useState("");
 
-  /* ── Fetch ── */
+  /* â”€â”€ Fetch â”€â”€ */
   const fetchData = useCallback(async () => {
     setLoading(true); setError("");
     try {
@@ -84,7 +84,7 @@ export default function AttendanceMapPage() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  /* ── Filtered list ── */
+  /* â”€â”€ Filtered list â”€â”€ */
   const filtered = useMemo(() =>
     staff
       .filter(s => filter === "All" || s.status === filter)
@@ -96,7 +96,7 @@ export default function AttendanceMapPage() {
     [staff, filter, search]
   );
 
-  /* ── Render ── */
+  /* â”€â”€ Render â”€â”€ */
   return (
     <div className="attendance-map-page">
 
@@ -104,18 +104,7 @@ export default function AttendanceMapPage() {
       <div className="map-header">
         <div>
           <h1><MapPin size={22} /> Live Attendance Map</h1>
-          <p>Real-time workforce monitoring · Royal Mabati Factory</p>
-        </div>
-        <div className="map-header-right">
-          {date && <span className="map-date">{date}</span>}
-          {asOf && (
-            <span className="map-asof">
-              <Wifi size={12} /> Updated {asOf}
-            </span>
-          )}
-          <button className="map-refresh-btn" onClick={fetchData} disabled={loading}>
-            <RefreshCw size={14} className={loading ? "spin" : ""} />
-          </button>
+          <p>Real-time workforce monitoring Â· Royal Mabati Factory</p>
         </div>
       </div>
 
@@ -175,7 +164,7 @@ export default function AttendanceMapPage() {
       {/* MAIN GRID */}
       <div className="map-grid">
 
-        {/* LEFT — Mock Map */}
+        {/* LEFT â€” Mock Map */}
         <div className="map-container">
           <div className="mock-map">
             <div className="mock-map-pins">
@@ -212,7 +201,7 @@ export default function AttendanceMapPage() {
           </div>
         </div>
 
-        {/* RIGHT — Staff List */}
+        {/* RIGHT â€” Staff List */}
         <div className="map-staff-list">
 
           {loading ? (

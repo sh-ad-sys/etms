@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ReactNode, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -17,10 +17,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
-  /* ===================================================
-     ROLE DETECTION BASED ON ROUTE
-     (TEMP — Replace later with auth session)
-  =================================================== */
   const getRoleFromPath = (): Role => {
     if (pathname.startsWith("/dashboard/supervisor")) return "supervisor";
     if (pathname.startsWith("/dashboard/manager")) return "manager";
@@ -32,28 +28,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const role = getRoleFromPath();
 
   return (
-    <div className="dashboard-root">
-      {/* Sidebar */}
-      <div className="dashboard-sidebar">
+    <div className={`dashboard-root ${collapsed ? "sidebar-is-collapsed" : "sidebar-is-expanded"}`}>
+      <div className={`dashboard-sidebar ${collapsed ? "collapsed" : "expanded"}`}>
         <Sidebar role={role} collapsed={collapsed} />
       </div>
 
-      {/* Right Section */}
       <div className="dashboard-main-wrapper">
-        {/* Topbar */}
         <Topbar onToggleSidebar={() => setCollapsed(!collapsed)} />
 
-        {/* Content */}
-        <main
-          className={`dashboard-content ${
-            collapsed ? "dashboard-collapsed" : "dashboard-expanded"
-          }`}
-        >
+        <main className="dashboard-content">
           <div className="dashboard-container">{children}</div>
+          <Footer collapsed={collapsed} />
         </main>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   );

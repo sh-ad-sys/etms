@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import "@/styles/profile.css";
@@ -7,8 +7,9 @@ import {
   User, Mail, Briefcase, Save, Camera,
   Phone, Building2, BadgeCheck, Loader2, AlertCircle, CheckCircle2
 } from "lucide-react";
+import { API_ENDPOINTS, getAuthHeaders } from "@/config/api";
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 interface Profile {
   id:           string;
@@ -30,7 +31,7 @@ interface FormState {
 
 const API = "http://localhost/etms/controllers";
 
-/* ─── Component ─────────────────────────────────────────── */
+/* â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function ProfilePage() {
 
@@ -52,12 +53,12 @@ export default function ProfilePage() {
 
   const fileRef = useRef<HTMLInputElement>(null);
 
-  /* ── Fetch profile ── */
+  /* â”€â”€ Fetch profile â”€â”€ */
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
     try {
-      const res  = await fetch(`${API}/get-profile.php`, { credentials: "include" });
+      const res  = await fetch(API_ENDPOINTS.profile, { headers: getAuthHeaders() });
       const data = await res.json();
       if (data.success) {
         setProfile(data.user);
@@ -79,7 +80,7 @@ export default function ProfilePage() {
 
   useEffect(() => { fetchProfile(); }, [fetchProfile]);
 
-  /* ── Avatar preview ── */
+  /* â”€â”€ Avatar preview â”€â”€ */
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,7 +89,7 @@ export default function ProfilePage() {
     setAvatarPrev(URL.createObjectURL(file));
   };
 
-  /* ── Save ── */
+  /* â”€â”€ Save â”€â”€ */
 
   const saveProfile = async () => {
     setError(""); setSuccess(""); setSaving(true);
@@ -138,7 +139,7 @@ export default function ProfilePage() {
     setEditing(false);
   };
 
-  /* ── Render ── */
+  /* â”€â”€ Render â”€â”€ */
 
   if (loading) return (
     <div className="profile-loading">
@@ -159,7 +160,7 @@ export default function ProfilePage() {
     <div className="profile-container">
       <div className="profile-card">
 
-        {/* LEFT — avatar + name */}
+        {/* LEFT â€” avatar + name */}
         <div className="profile-left">
 
           <div className="avatar-box">
@@ -196,7 +197,7 @@ export default function ProfilePage() {
 
         </div>
 
-        {/* RIGHT — form */}
+        {/* RIGHT â€” form */}
         <div className="profile-right">
 
           <h3>Profile Information</h3>
@@ -284,3 +285,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+

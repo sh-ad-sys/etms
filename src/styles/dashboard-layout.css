@@ -1,11 +1,19 @@
-/* ===================================================
+﻿/* ===================================================
    DASHBOARD ROOT LAYOUT
 =================================================== */
 
 .dashboard-root {
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 80px;
+  --sidebar-current-width: var(--sidebar-width);
+
   display: flex;
   min-height: 100vh;
-  background: #f1f5f9; /* slate-100 */
+  background: #f1f5f9;
+}
+
+.dashboard-root.sidebar-is-collapsed {
+  --sidebar-current-width: var(--sidebar-collapsed-width);
 }
 
 /* ===================================================
@@ -15,16 +23,16 @@
 .dashboard-sidebar {
   transition: width 0.25s ease;
   z-index: 40;
-  flex-shrink: 0; /* Sidebar does not shrink */
+  flex-shrink: 0;
+  width: var(--sidebar-current-width);
 }
 
-/* Sidebar width states */
 .dashboard-sidebar.expanded {
-  width: 260px;
+  width: var(--sidebar-width);
 }
 
 .dashboard-sidebar.collapsed {
-  width: 80px;
+  width: var(--sidebar-collapsed-width);
 }
 
 /* ===================================================
@@ -34,22 +42,25 @@
 .dashboard-main-wrapper {
   display: flex;
   flex-direction: column;
-  flex: 1; /* takes remaining space */
+  flex: 1;
   min-height: 100vh;
+  min-width: 0;
+  width: 100%;
   transition: all 0.25s ease;
 }
 
 /* ===================================================
    TOPBAR OFFSET
-   (Prevents content from hiding under fixed header)
 =================================================== */
 
 .dashboard-content {
   flex: 1;
-  padding: 1.5rem 2rem;
-  margin-top: 64px; /* topbar height */
   width: 100%;
+  min-width: 0;
+  margin-top: 64px;
+  padding: 1.5rem 2rem 6.5rem;
   transition: all 0.25s ease;
+  overflow-x: hidden;
 }
 
 /* ===================================================
@@ -60,36 +71,79 @@
   max-width: 1280px;
   margin: 0 auto;
   width: 100%;
+  min-width: 0;
 }
-
-/* ===================================================
-   SMOOTH TRANSITIONS
-=================================================== */
 
 .dashboard-main-wrapper,
 .dashboard-content {
   transition: all 0.3s ease;
 }
 
-/* ===================================================
-   RESPONSIVE TIP
-=================================================== */
-
-/* Optional: Make sidebar overlay on small screens */
 @media (max-width: 1024px) {
+  .dashboard-root {
+    --sidebar-current-width: 0px;
+  }
+
   .dashboard-sidebar {
     position: fixed;
+    width: var(--sidebar-width);
     height: 100%;
-    left: -260px; /* hide offscreen by default */
+    left: calc(-1 * var(--sidebar-width));
     top: 0;
     z-index: 50;
   }
-  
+
   .dashboard-sidebar.expanded {
     left: 0;
   }
-  
-  .dashboard-main-wrapper {
-    margin-left: 0; /* main content always full width on mobile */
+
+  .dashboard-sidebar.collapsed {
+    left: calc(-1 * var(--sidebar-width));
+    width: var(--sidebar-width);
   }
+
+  .dashboard-main-wrapper {
+    margin-left: 0;
+  }
+
+  .dashboard-content {
+    padding: 1.25rem 1rem 7rem;
+  }
+}
+
+/* ===================================================
+   GLOBAL DASHBOARD REFRESH CLEANUP
+=================================================== */
+button.refresh-btn,
+button.mgr-refresh-btn,
+button.manager-refresh-btn,
+button.sup-refresh-btn,
+button.trends-refresh-btn,
+button.shift-refresh-btn,
+button.health-refresh-btn,
+button.admin-refresh-btn,
+button.au-refresh-btn,
+button.hr-att-refresh-btn,
+button.hr-refresh-btn,
+button.lr-refresh-btn,
+button.map-refresh-btn,
+button.late-refresh-btn,
+button.mc-refresh-btn,
+button.ta-btn-refresh,
+button.settings-refresh-btn,
+button.refresh-msg-btn {
+  display: none !important;
+}
+
+.mgr-updated,
+.trends-updated,
+.shift-updated,
+.admin-updated,
+.health-updated,
+.hr-updated,
+.hr-att-updated,
+.manager-asof,
+.map-asof,
+.map-date {
+  display: none !important;
 }

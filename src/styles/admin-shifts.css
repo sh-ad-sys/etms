@@ -227,3 +227,20 @@
     padding: 20px;
   }
 }
+.shift-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.shift-card-link:hover {
+  border-color: #93c5fd;
+}
+
+.admin-shifts-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--rmf-gray);
+  padding: 18px 0;
+}

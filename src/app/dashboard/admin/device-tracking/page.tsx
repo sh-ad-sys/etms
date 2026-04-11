@@ -1,78 +1,71 @@
-"use client";
+﻿"use client";
 
 import "@/styles/admin-device-tracking.css";
-import { useState } from "react";
-import {
-  Monitor,
-  Smartphone,
-  Globe,
-  MapPin,
-  Shield,
-  Wifi,
-  Activity,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Monitor, Smartphone, Globe, MapPin, Shield, Wifi, Activity, Loader2 } from "lucide-react";
 
 interface DeviceTrack {
   id: number;
-  device: string;
+  name: string;
   type: string;
   ip: string;
   location: string;
-  status: "Online" | "Offline" | "Suspicious";
-  lastSeen: string;
+  trackingStatus: "Online" | "Offline" | "Suspicious";
+  lastActive: string;
 }
 
+const API = "http://localhost/etms/controllers/admin";
+
 export default function DeviceTrackingPage() {
+  const [devices, setDevices] = useState<DeviceTrack[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const [devices] = useState<DeviceTrack[]>([
-    {
-      id: 1,
-      device: "Admin Office PC",
-      type: "Desktop",
-      ip: "192.168.1.10",
-      location: "Nairobi, Kenya",
-      status: "Online",
-      lastSeen: "2 mins ago"
-    },
-    {
-      id: 2,
-      device: "HR Tablet",
-      type: "Tablet",
-      ip: "192.168.1.22",
-      location: "Mombasa, Kenya",
-      status: "Offline",
-      lastSeen: "1 hour ago"
-    },
-    {
-      id: 3,
-      device: "Gate Biometric Scanner",
-      type: "Biometric",
-      ip: "192.168.1.30",
-      location: "Factory Gate A",
-      status: "Online",
-      lastSeen: "Active Now"
-    }
-  ]);
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await fetch(`${API}/get-devices.php`, { credentials: "include" });
+        const json = await res.json();
+        if (!json.success) {
+          setError(json.error || "Failed to load tracked devices.");
+          return;
+        }
+        setDevices((json.devices || []).map((device: any) => ({
+          id: device.id,
+          name: device.name,
+          type: device.type,
+          ip: device.ip,
+          location: device.location,
+          trackingStatus: device.trackingStatus || "Offline",
+          lastActive: device.lastActive,
+        })));
+      } catch {
+        setError("Unable to load tracked devices.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const onlineCount = devices.filter(d => d.status === "Online").length;
-  const offlineCount = devices.filter(d => d.status === "Offline").length;
-  const suspiciousCount = devices.filter(d => d.status === "Suspicious").length;
+    load();
+  }, []);
+
+  const onlineCount = useMemo(() => devices.filter((d) => d.trackingStatus === "Online").length, [devices]);
+  const offlineCount = useMemo(() => devices.filter((d) => d.trackingStatus === "Offline").length, [devices]);
+  const suspiciousCount = useMemo(() => devices.filter((d) => d.trackingStatus === "Suspicious").length, [devices]);
 
   return (
     <div className="device-tracking-container">
-
-      {/* HEADER */}
       <div className="tracking-header">
         <h1>
-          <Shield size={28}/>
+          <Shield size={28} />
           Device Tracking Center
         </h1>
         <p>Monitor all logged-in devices across the enterprise network</p>
       </div>
 
-      {/* SUMMARY STATS */}
       <div className="tracking-summary">
-
         <div className="summary-card online">
           <h3>Online Devices</h3>
           <p>{onlineCount}</p>
@@ -87,82 +80,71 @@ export default function DeviceTrackingPage() {
           <h3>Suspicious Activity</h3>
           <p>{suspiciousCount}</p>
         </div>
-
       </div>
 
-      {/* DEVICE TABLE */}
       <div className="tracking-table-card">
-
-        <table className="tracking-table">
-
-          <thead>
-            <tr>
-              <th>Device</th>
-              <th>Type</th>
-              <th>IP Address</th>
-              <th>Location</th>
-              <th>Status</th>
-              <th>Last Seen</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {devices.map((device) => (
-              <tr key={device.id} className="device-table-row">
-
-                {/* DEVICE NAME */}
-                <td>
-                  <div className="device-name-wrapper">
-                    {getDeviceIcon(device.type)}
-                    <span>{device.device}</span>
-                  </div>
-                </td>
-
-                {/* TYPE */}
-                <td>{device.type}</td>
-
-                {/* IP */}
-                <td>
-                  <div className="cell-with-icon">
-                    <Wifi size={14}/>
-                    {device.ip}
-                  </div>
-                </td>
-
-                {/* LOCATION */}
-                <td>
-                  <div className="cell-with-icon">
-                    <MapPin size={14}/>
-                    {device.location}
-                  </div>
-                </td>
-
-                {/* STATUS */}
-                <td>
-                  <span className={`device-status ${device.status.toLowerCase()}`}>
-                    <Activity size={12}/>
-                    {device.status}
-                  </span>
-                </td>
-
-                {/* LAST SEEN */}
-                <td className="last-seen">
-                  {device.lastSeen}
-                </td>
-
+        {loading ? (
+          <div className="tracking-empty-state"><Loader2 size={18} className="spin" /> Loading devices...</div>
+        ) : error ? (
+          <div className="tracking-empty-state">{error}</div>
+        ) : (
+          <table className="tracking-table">
+            <thead>
+              <tr>
+                <th>Device</th>
+                <th>Type</th>
+                <th>IP Address</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Last Seen</th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
 
-        </table>
+            <tbody>
+              {devices.map((device) => (
+                <tr key={device.id} className="device-table-row">
+                  <td>
+                    <div className="device-name-wrapper">
+                      {getDeviceIcon(device.type)}
+                      <span>{device.name}</span>
+                    </div>
+                  </td>
+                  <td>{device.type}</td>
+                  <td>
+                    <div className="cell-with-icon">
+                      <Wifi size={14} />
+                      {device.ip}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="cell-with-icon">
+                      <MapPin size={14} />
+                      {device.location}
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`device-status ${device.trackingStatus.toLowerCase()}`}>
+                      <Activity size={12} />
+                      {device.trackingStatus}
+                    </span>
+                  </td>
+                  <td className="last-seen">{device.lastActive}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {!loading && !error && devices.length === 0 && (
+          <div className="tracking-empty-state">No tracked devices found.</div>
+        )}
       </div>
-
     </div>
   );
 }
 
-function getDeviceIcon(type: string){
-  if(type === "Desktop") return <Monitor size={18}/>;
-  if(type === "Tablet") return <Smartphone size={18}/>;
-  return <Globe size={18}/>;
+function getDeviceIcon(type: string) {
+  if (type === "Desktop" || type === "Laptop") return <Monitor size={18} />;
+  if (type === "Tablet" || type === "Mobile") return <Smartphone size={18} />;
+  return <Globe size={18} />;
 }

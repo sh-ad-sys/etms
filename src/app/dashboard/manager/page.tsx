@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import "@/styles/manager-dashboard.css";
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type Insight = { type: "up" | "down" | "warning" | "danger" | "info"; message: string };
 
@@ -47,7 +47,7 @@ const INSIGHT_META = {
   info:    { icon: <Info          size={14} />, cls: "insight-info"    },
 };
 
-/* ─── Page ───────────────────────────────────────────────── */
+/* â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function ManagerDashboardPage() {
 
@@ -72,9 +72,9 @@ export default function ManagerDashboardPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  /* Auto-refresh every 5 minutes */
+  /* Auto-refresh every 60 seconds */
   useEffect(() => {
-    const id = setInterval(fetchData, 5 * 60 * 1000);
+    const id = setInterval(fetchData, 60_000);
     return () => clearInterval(id);
   }, [fetchData]);
 
@@ -93,7 +93,7 @@ export default function ManagerDashboardPage() {
       <div className="mgr-header">
         <div>
           <h1><LayoutDashboard size={22} /> Executive Manager Dashboard</h1>
-          <p>Strategic workforce intelligence · {data.date}</p>
+          <p>Strategic workforce intelligence Â· {data.date}</p>
         </div>
         <div className="mgr-header-right">
           <span className="mgr-updated">Updated {data.generatedAt}</span>
@@ -131,9 +131,9 @@ export default function ManagerDashboardPage() {
         <Link href="/dashboard/manager/leave-approvals" className="mgr-pending-banner">
           <FileCheck size={18} />
           <span>
-            <strong>{kpis.pendingApprovals}</strong> leave request{kpis.pendingApprovals !== 1 ? "s" : ""} approved by supervisor and awaiting your final approval
+            <strong>{kpis.pendingApprovals}</strong> leave request{kpis.pendingApprovals !== 1 ? "s" : ""} approved by supervisor and awaiting your review before HR approval
           </span>
-          <span className="mgr-banner-action">Review →</span>
+          <span className="mgr-banner-action">Review â†’</span>
         </Link>
       )}
 
@@ -209,7 +209,7 @@ export default function ManagerDashboardPage() {
       <div className="mgr-actions-grid">
 
         <Section title="Executive Actions">
-          <Action icon={FileCheck}    label="Final Leave Approvals"       href="/dashboard/manager/leave-approvals"  badge={kpis.pendingApprovals} />
+          <Action icon={FileCheck}    label="Leave Approvals"       href="/dashboard/manager/leave-approvals"  badge={kpis.pendingApprovals} />
           <Action icon={ClipboardList}label="Disciplinary Confirmations"  href="/dashboard/manager/disciplinary" />
           <Action icon={ShieldCheck}  label="Attendance Exemptions"       href="/dashboard/manager/exemptions" />
         </Section>
@@ -226,7 +226,7 @@ export default function ManagerDashboardPage() {
   );
 }
 
-/* ─── Sub-components ─────────────────────────────────────── */
+/* â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function KpiCard({ icon: Icon, title, value, color }: {
   icon: LucideIcon; title: string; value: string; color: string;

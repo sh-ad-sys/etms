@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import {
@@ -9,17 +9,24 @@ import {
 import { QRCodeCanvas } from "qrcode.react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { API_ENDPOINTS, getAuthHeaders } from "@/config/api";
 import "@/styles/staff-dashboard.css";
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 interface Task {
-  id:       number;
-  title:    string;
-  deadline: string;
+  id: number;
+  title: string;
+  deadline: string | null;
 }
 
-interface Notification { title: string; }
+interface Notification {
+  id: number;
+  title: string;
+  message?: string;
+  is_read?: number;
+  created_at?: string;
+}
 
 interface Stats {
   weekHours:      number;
@@ -30,11 +37,12 @@ interface Stats {
 }
 
 interface ApiTask {
-  id:          number;
-  title:       string;
+  id: number | string;
+  title: string;
   description: string;
-  created_at:  string;
-  completed:   number;
+  dueDate?: string | null;
+  assignedOn?: string | null;
+  completed: boolean | number;
 }
 
 interface QRSession {
@@ -45,7 +53,28 @@ interface QRSession {
 
 const BASE = "http://localhost/etms/controllers";
 
-/* ─── Component ─────────────────────────────────────────── */
+function formatTaskDate(value: string | null | undefined): string {
+  if (!value) return "No date";
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return parsed.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function parseSessionExpiry(value: string | undefined): number {
+  if (!value) return 0;
+
+  const normalized = value.includes("T") ? value : value.replace(" ", "T");
+  const expiresAt = new Date(normalized).getTime();
+
+  return Number.isNaN(expiresAt) ? 0 : expiresAt;
+}
+/* â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function StaffDashboard() {
 
@@ -60,16 +89,16 @@ export default function StaffDashboard() {
   const [showToast,     setShowToast]     = useState(false);
   const [toastType,     setToastType]     = useState<"success" | "error">("success");
 
-  /* ── QR Session (server-generated, like attendance/qr page) ── */
+  /* QR Session (server-generated, like attendance/qr page) */
   const [session,    setSession]    = useState<QRSession | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [countdown,  setCountdown]  = useState(30);
   const [qrLoading,  setQrLoading]  = useState(true);
 
-  /* ── Geolocation ── */
+  /* Geolocation */
   const [geoStatus, setGeoStatus] = useState<"checking" | "inside" | "outside" | "unavailable">("checking");
 
-  /* ── Check-in state ── */
+  /* Check-in state */
   const [verifying,      setVerifying]      = useState(false);
   const [showSuccess,    setShowSuccess]    = useState(false);
   const [lastAction,     setLastAction]     = useState<"check_in" | "check_out" | null>(null);
@@ -82,7 +111,7 @@ export default function StaffDashboard() {
     setTimeout(() => setShowToast(false), 3500);
   }, []);
 
-  /* ── Fetch today's check-in status from server ── */
+  /* Fetch today's check-in status from server */
   const fetchCheckInStatus = useCallback(async () => {
     setStatusLoading(true);
     try {
@@ -97,21 +126,39 @@ export default function StaffDashboard() {
     finally  { setStatusLoading(false); }
   }, []);
 
-  /* ── Fetch QR session from server ── */
-  const fetchSession = useCallback(async () => {
+
+  /* €€ Fetch QR session from server €€ */
+  const fetchSession = useCallback(async (): Promise<QRSession | null> => {
     setQrLoading(true);
     try {
       const res  = await fetch(`${BASE}/attendance/generate-session.php`, { credentials: "include" });
       const text = await res.text();
       if (!text.startsWith("{")) throw new Error("Invalid response");
       const data: QRSession = JSON.parse(text);
-      if (data.success) setSession(data);
+      if (data.success) {
+        setSession(data);
+        setCountdown(30);
+        return data;
+      }
     } catch (e) {
       console.error("QR session error:", e);
     } finally {
       setQrLoading(false);
     }
+
+    return null;
   }, []);
+
+  const ensureFreshSession = useCallback(async (): Promise<QRSession | null> => {
+    if (!session) return fetchSession();
+
+    const expiresAt = parseSessionExpiry(session.expires);
+    if (!expiresAt || expiresAt - Date.now() <= 5000) {
+      return fetchSession();
+    }
+
+    return session;
+  }, [fetchSession, session]);
 
   /* Auto-refresh QR every 30s */
   useEffect(() => { fetchSession(); }, [fetchSession, refreshKey]);
@@ -126,7 +173,7 @@ export default function StaffDashboard() {
     return () => clearInterval(id);
   }, []);
 
-  /* ── Geolocation check ── */
+  /* â”€â”€ Geolocation check â”€â”€ */
   useEffect(() => {
     if (!navigator.geolocation) { setGeoStatus("unavailable"); return; }
     const office = { lat: -1.5313, lng: 37.2709 };
@@ -150,13 +197,13 @@ export default function StaffDashboard() {
     return () => navigator.geolocation.clearWatch(watcher);
   }, []);
 
-  /* ── Fetch dashboard data ── */
+  /* â”€â”€ Fetch dashboard data â”€â”€ */
   const fetchDashboardData = useCallback(async () => {
     try {
       const [taskRes, notifRes, statsRes] = await Promise.all([
-        fetch(`${BASE}/get-tasks.php`,             { credentials: "include" }),
-        fetch(`${BASE}/get-notifications.php`,     { credentials: "include" }),
-        fetch(`${BASE}/get-staff-dashboard.php`,   { credentials: "include" }),
+        fetch(`${BASE}/get-tasks.php`, { credentials: "include" }),
+        fetch(API_ENDPOINTS.notifications, { headers: getAuthHeaders() }),
+        fetch(`${BASE}/get-staff-dashboard.php`, { credentials: "include" }),
       ]);
 
       const [taskData, notifData, statsData] = await Promise.all([
@@ -165,10 +212,16 @@ export default function StaffDashboard() {
 
       if (taskData.success) {
         setTasks(taskData.tasks.map((t: ApiTask) => ({
-          id: t.id, title: t.title, deadline: t.created_at,
+          id: Number(t.id),
+          title: t.title,
+          deadline: t.dueDate ?? t.assignedOn ?? null,
         })));
       }
-      setNotifications(notifData.notifications ?? []);
+
+      if (notifData.success) {
+        setNotifications(notifData.notifications ?? []);
+      }
+
       if (statsData.stats) setStats(statsData.stats);
 
     } catch (e) { console.error("Dashboard fetch error", e); }
@@ -180,7 +233,7 @@ export default function StaffDashboard() {
     return () => clearInterval(id);
   }, [fetchDashboardData]);
 
-  /* ── Update task ── */
+  /* â”€â”€ Update task â”€â”€ */
   const updateTaskStatus = async (taskId: number) => {
     try {
       const res    = await fetch(`${BASE}/update-task.php`, {
@@ -193,11 +246,17 @@ export default function StaffDashboard() {
     } catch { toast("Failed to update task.", "error"); }
   };
 
-  /* ── Confirm attendance (same flow as QR page) ── */
+  /* â”€â”€ Confirm attendance (same flow as QR page) â”€â”€ */
   const confirmPresence = async () => {
-    if (!session || verifying) return;
+    if (verifying) return;
     setVerifying(true);
     try {
+      const activeSession = await ensureFreshSession();
+      if (!activeSession) {
+        toast("Refreshing secure QR. Please try again.", "error");
+        return;
+      }
+
       const geo = await new Promise<GeolocationPosition | null>(resolve => {
         if (!navigator.geolocation) { resolve(null); return; }
         navigator.geolocation.getCurrentPosition(resolve, () => resolve(null), { enableHighAccuracy: true });
@@ -207,7 +266,7 @@ export default function StaffDashboard() {
         method: "POST", credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          token:          session.token,
+          token:          activeSession.token,
           lat:            geo?.coords.latitude   ?? null,
           lng:            geo?.coords.longitude  ?? null,
           accuracy:       geo?.coords.accuracy   ?? null,
@@ -236,7 +295,7 @@ export default function StaffDashboard() {
 
   const qrValue = useMemo(() => session?.token ?? "", [session]);
 
-  /* ── Render ── */
+  /* â”€â”€ Render â”€â”€ */
   return (
     <div className="staff-dashboard-container">
 
@@ -256,7 +315,7 @@ export default function StaffDashboard() {
 
       <div className="staff-main-grid">
 
-        {/* LEFT — QR Panel */}
+        {/* LEFT â€” QR Panel */}
         <div className="staff-left-panel">
           <div className="staff-card">
             <h2><ShieldCheck size={16} /> Secure Attendance Verification</h2>
@@ -315,8 +374,8 @@ export default function StaffDashboard() {
             {/* Show today's check-in / check-out times */}
             {(checkInTime || checkOutTime) && (
               <div className="qr-times-row">
-                {checkInTime  && <span className="qr-time-in">✓ In {checkInTime}</span>}
-                {checkOutTime && <span className="qr-time-out">✓ Out {checkOutTime}</span>}
+                {checkInTime  && <span className="qr-time-in">In {checkInTime}</span>}
+                {checkOutTime && <span className="qr-time-out">Out {checkOutTime}</span>}
               </div>
             )}
 
@@ -330,7 +389,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
-        {/* RIGHT — Tasks & Notifications */}
+        {/* RIGHT â€” Tasks & Notifications */}
         <div className="staff-right-panel">
 
           <div className="staff-card">
@@ -340,7 +399,7 @@ export default function StaffDashboard() {
               : tasks.map(task => (
                 <div key={task.id} className="task-row">
                   <p>{task.title}</p>
-                  <span>{new Date(task.deadline).toLocaleDateString("en-GB", { day:"2-digit", month:"short" })}</span>
+                  <span>{formatTaskDate(task.deadline)}</span>
                   <button onClick={() => updateTaskStatus(task.id)}>Complete</button>
                 </div>
               ))
@@ -365,7 +424,7 @@ export default function StaffDashboard() {
         <div className={`toast toast-${toastType}`}>
           {toastType === "success"
             ? <CheckCircle size={15} />
-            : <span style={{ fontSize: 15 }}>⚠</span>
+            : <span style={{ fontSize: 15 }}>âš </span>
           }
           {statusMessage}
         </div>
@@ -398,3 +457,7 @@ function StatCard({ icon: Icon, title, value }: {
     </Card>
   );
 }
+
+
+
+

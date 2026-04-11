@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import "@/styles/hr.css";
 import {
@@ -15,7 +16,7 @@ import {
   BarChart, Bar, AreaChart, Area,
 } from "recharts";
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Types Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 
 type Activity = {
   source:      string;
@@ -53,7 +54,7 @@ const activityIcon: Record<string, React.ReactNode> = {
   id_replace: <CreditCard     size={15} />,
 };
 
-/* ─── Stat Card ─────────────────────────────────────────── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Stat Card Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 
 function StatCard({ icon: Icon, title, value, color }: {
   icon: React.ElementType; title: string;
@@ -68,13 +69,13 @@ function StatCard({ icon: Icon, title, value, color }: {
   );
 }
 
-/* ─── Section Card ──────────────────────────────────────── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Section Card Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 
-function SectionCard({ icon: Icon, title, desc, badge }: {
-  icon: React.ElementType; title: string; desc: string; badge?: number;
+function SectionCard({ icon: Icon, title, desc, badge, href, id }: {
+  icon: React.ElementType; title: string; desc: string; badge?: number; href?: string; id?: string;
 }) {
-  return (
-    <motion.div whileHover={{ scale: 1.03 }} className="hr-card">
+  const card = (
+    <motion.div whileHover={{ scale: 1.03 }} className="hr-card" id={id}>
       <Icon className="hr-card-icon" />
       <h3>{title}</h3>
       <p>{desc}</p>
@@ -83,9 +84,15 @@ function SectionCard({ icon: Icon, title, desc, badge }: {
       )}
     </motion.div>
   );
+
+  if (href) {
+    return <Link href={href}>{card}</Link>;
+  }
+
+  return card;
 }
 
-/* ─── Page ───────────────────────────────────────────────── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Page Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 
 export default function HRDashboard() {
 
@@ -106,6 +113,11 @@ export default function HRDashboard() {
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => {
+    const id = setInterval(fetchData, 60_000);
+    return () => clearInterval(id);
+  }, [fetchData]);
 
   if (loading && !data) return (
     <div className="hr-loading"><Loader2 size={24} className="spin" /> Loading HR data...</div>
@@ -128,7 +140,6 @@ export default function HRDashboard() {
           >
             HR Command Center
           </motion.h1>
-          <p className="hr-subtitle">Royal Mabati Factory · {data.date}</p>
         </div>
         <div className="hr-header-right">
           <span className="hr-updated">Updated {data.generatedAt}</span>
@@ -206,7 +217,7 @@ export default function HRDashboard() {
       </section>
 
       {/* ID CARD SUMMARY */}
-      <section className="hr-section">
+      <section className="hr-section" id="id-card-management">
         <h2>ID Card Management</h2>
         <div className="hr-id-summary">
           <div className="hr-id-stat id-active">
@@ -229,18 +240,24 @@ export default function HRDashboard() {
 
         <div className="hr-grid" style={{ marginTop: 16 }}>
           <SectionCard
+            id="lost-id-reports"
+            href="/dashboard/hr/lost-id-reports"
             icon={FileWarning}
             title="Lost ID Reports"
             desc="Review and process lost ID card reports"
             badge={idSummary.pendingLostReports}
           />
           <SectionCard
+            id="replacement-requests"
+            href="/dashboard/hr/replacement-requests"
             icon={CreditCard}
             title="Replacement Requests"
             desc="Pending ID card replacement requests"
             badge={idSummary.pendingReplacements}
           />
           <SectionCard
+            id="id-issuance-tracking"
+            href="/dashboard/hr/id-issuance-tracking"
             icon={IdCard}
             title="ID Issuance Tracking"
             desc="Full ID card issuance and status logs"
@@ -291,3 +308,7 @@ export default function HRDashboard() {
     </div>
   );
 }
+
+
+
+

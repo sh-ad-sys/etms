@@ -1,9 +1,9 @@
-/* ================================================================
-   Royal Mabati Factory – Topbar
-   White topbar variant · Brand: Deep Blue #1e3a8a · Red #dc2626
+﻿/* ================================================================
+   Royal Mabati Factory â€“ Topbar
+   White topbar variant Â· Brand: Deep Blue #1e3a8a Â· Red #dc2626
    ================================================================ */
 
-/* ── Container ── */
+/* â”€â”€ Container â”€â”€ */
 .topbar {
   position: fixed;
   top: 0; left: 0; width: 100%;
@@ -17,11 +17,11 @@
   box-shadow: 0 2px 12px rgba(30,58,138,.08);
 }
 
-/* ── Left ── */
+/* â”€â”€ Left â”€â”€ */
 .topbar-left { display: flex; align-items: center; gap: 1rem; }
 .topbar-left img { border-radius: 8px; }
 
-/* ── Center ── */
+/* â”€â”€ Center â”€â”€ */
 .topbar-center {
   position: absolute; left: 50%;
   transform: translateX(-50%);
@@ -33,10 +33,10 @@
 }
 @media (max-width: 768px) { .topbar-center { display: none; } }
 
-/* ── Right ── */
+/* â”€â”€ Right â”€â”€ */
 .topbar-right { display: flex; align-items: center; gap: 10px; }
 
-/* ── Icon button ── */
+/* â”€â”€ Icon button â”€â”€ */
 .topbar-icon {
   position: relative;
   display: flex; align-items: center; justify-content: center;
@@ -46,9 +46,9 @@
 }
 .topbar-icon:hover { background: #eff6ff; color: #1e3a8a; }
 
-/* ════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    NOTIFICATION BELL & BADGE
-════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .topbar-notifications { position: relative; }
  
@@ -79,7 +79,7 @@
   to   { opacity:1; transform:scale(1); }
 }
 
-/* ── Notification panel — fixed, flush below topbar ── */
+/* â”€â”€ Notification panel â€” fixed, flush below topbar â”€â”€ */
 .notification-wrapper {
   position: fixed;
   top: 64px; /* exactly below topbar */
@@ -205,9 +205,9 @@
 }
 .notif-dropdown-footer a:hover { text-decoration: underline; }
 
-/* ════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    USER PROFILE DROPDOWN
-════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .topbar-user { position: relative; }
 
@@ -284,7 +284,7 @@
 .topbar-dropdown-item:last-child { border-bottom: none; }
 .topbar-dropdown-item:hover { background: #f0f6ff; color: #1e3a8a; }
 
-/* Logout — starts with red text, full deep red fill on hover */
+/* Logout â€” starts with red text, full deep red fill on hover */
 .topbar-dropdown-item.logout {
   color: #b91c1c; font-weight: 600;
 }
@@ -293,8 +293,53 @@
   color: #ffffff;
 }
 
-/* ── Animations ── */
+/* â”€â”€ Animations â”€â”€ */
 @keyframes fadeIn {
   from { opacity:0; transform:translateY(-6px) scale(.97); }
   to   { opacity:1; transform:none; }
 }
+.notif-trigger {
+  gap: 8px;
+  width: auto;
+  min-width: 44px;
+  padding: 0 12px;
+}
+
+.topbar-notif-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a8a;
+  white-space: nowrap;
+}
+
+.topbar-notif-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.28);
+}
+
+@media (max-width: 768px) {
+  .notif-trigger {
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+  }
+
+  .topbar-notif-label,
+  .topbar-notif-count {
+    display: none;
+  }
+}
+
+
+
