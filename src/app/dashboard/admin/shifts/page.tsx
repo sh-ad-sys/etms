@@ -1,143 +1,129 @@
 ﻿"use client";
 
 import "@/styles/admin-shifts.css";
-import { Clock, CalendarDays, Plus, Settings, Timer, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-
-interface ShiftItem {
-  id: number;
-  name: string;
-  startLabel: string;
-  endLabel: string;
-  break: string;
-  overtimeAfterLabel: string;
-  status: string;
-}
+import { Clock, AlertTriangle, RefreshCw } from "lucide-react";
+import { useState, useCallback } from "react";
 
 const API = "http://localhost/etms/controllers/admin";
 
 export default function AdminShiftsPage() {
-  const [shifts, setShifts] = useState<ShiftItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [graceValue, setGraceValue] = useState(15);
+  const [maxHours, setMaxHours] = useState(48);
+  const [overtimeRate, setOvertimeRate] = useState(150);
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const res = await fetch(`${API}/get-shifts.php`, { credentials: "include" });
-        const json = await res.json();
-        if (!json.success) {
-          setError(json.error || "Failed to load shifts.");
-          return;
-        }
-        setShifts(json.shifts || []);
-      } catch {
-        setError("Unable to load shifts.");
-      } finally {
-        setLoading(false);
+  const handleGraceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(0, parseInt(e.target.value) || 0);
+    setGraceValue(value);
+  };
+
+  const handleMaxHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(0, parseInt(e.target.value) || 0);
+    setMaxHours(value);
+  };
+
+  const handleOvertimeRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(0, parseInt(e.target.value) || 0);
+    setOvertimeRate(value);
+  };
+
+  const handleSaveRules = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/save-compliance-rules.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          maxWeeklyHours: maxHours,
+          overtimeRate: overtimeRate,
+          graceMinutes: graceValue
+        })
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       }
-    };
-
-    load();
-  }, []);
+      
+      const json = await res.json();
+      if (json.success) {
+        alert("Rules saved successfully!");
+      } else {
+        alert(json.error || "Failed to save rules");
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : "Error saving rules";
+      console.error("Save error:", errorMsg);
+      alert(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  }, [maxHours, overtimeRate, graceValue]);
 
   return (
     <div className="admin-shifts-container">
+      {/* HEADER */}
       <div className="admin-shifts-header">
-        <h1>Shift Rules &amp; Working Hours</h1>
-        <p>Manage employee shifts, working hours, overtime rules and scheduling</p>
-      </div>
-
-      <div className="shift-action-bar">
-        <button className="btn-primary" type="button" disabled>
-          <Plus size={18} /> Create New Shift
+        <div>
+          <h1><Clock size={28} /> Overtime &amp; Compliance Rules</h1>
+          <p>Configure system-wide overtime rules and compliance settings</p>
+        </div>
+        <button className="shift-refresh-btn" disabled={loading} title="Rules saved" style={{ opacity: 0.5 }}>
+          <RefreshCw size={18} />
         </button>
       </div>
 
-      {loading ? (
-        <div className="admin-shifts-empty"><Loader2 size={18} className="spin" /> Loading shifts...</div>
-      ) : error ? (
-        <div className="admin-shifts-empty">{error}</div>
-      ) : (
-        <div className="shift-grid">
-          {shifts.map((shift) => (
-            <motion.a
-              key={shift.id}
-              href={`#shift-${shift.id}`}
-              whileHover={{ scale: 1.02 }}
-              className="shift-card shift-card-link"
-            >
-              <div className="shift-card-header">
-                <h3>{shift.name}</h3>
-                <span className={`status-badge ${shift.status}`}>{shift.status}</span>
-              </div>
-
-              <div className="shift-info">
-                <div>
-                  <Clock size={16} />
-                  <span>{shift.startLabel} - {shift.endLabel}</span>
-                </div>
-
-                <div>
-                  <Timer size={16} />
-                  <span>Break: {shift.break}</span>
-                </div>
-
-                <div>
-                  <CalendarDays size={16} />
-                  <span>OT After: {shift.overtimeAfterLabel}</span>
-                </div>
-              </div>
-
-              <div className="shift-actions">
-                <button className="btn-secondary" type="button">
-                  <Settings size={16} /> Edit
-                </button>
-                <button className="btn-danger" type="button">Disable</button>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-      )}
-
-      <div className="weekly-rules">
-        <h2>Weekly Working Rules</h2>
-
-        <div className="week-grid">
-          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, index) => (
-            <div key={day} className="day-card" id={shifts[index]?.id ? `shift-${shifts[index].id}` : undefined}>
-              <h4>{day}</h4>
-              <p>Assigned Shift: {shifts[index % Math.max(shifts.length, 1)]?.name || "Unassigned"}</p>
-              <button className="btn-secondary-small" type="button">Change</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="overtime-section">
-        <h2>Overtime &amp; Compliance Rules</h2>
-
+      {/* OVERTIME RULES */}
+      <div className="overtime-card">
+        <h2>Global Compliance Settings</h2>
         <div className="overtime-grid">
           <div className="rule-item">
             <label>Maximum Weekly Hours</label>
-            <input type="number" defaultValue={48} />
+            <div className="input-group">
+              <input 
+                type="number" 
+                min="0" 
+                value={maxHours}
+                onChange={handleMaxHoursChange}
+              />
+              <span className="unit">hrs</span>
+            </div>
           </div>
 
           <div className="rule-item">
-            <label>Overtime Rate (%)</label>
-            <input type="number" defaultValue={150} />
+            <label>Overtime Rate</label>
+            <div className="input-group">
+              <input 
+                type="number" 
+                min="0" 
+                value={overtimeRate}
+                onChange={handleOvertimeRateChange}
+              />
+              <span className="unit">%</span>
+            </div>
           </div>
 
           <div className="rule-item">
-            <label>Late Arrival Grace (Minutes)</label>
-            <input type="number" defaultValue={15} />
+            <label>Late Arrival Grace</label>
+            <div className="input-group">
+              <input 
+                type="number" 
+                min="0" 
+                value={graceValue}
+                onChange={handleGraceChange}
+              />
+              <span className="unit">min</span>
+            </div>
           </div>
         </div>
-
-        <button className="btn-primary save-btn" type="button">Save Rules</button>
+        <button 
+          className="btn-primary save-btn" 
+          type="button"
+          onClick={handleSaveRules}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save Rules"}
+        </button>
       </div>
     </div>
   );

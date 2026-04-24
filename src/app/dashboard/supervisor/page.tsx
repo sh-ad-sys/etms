@@ -134,12 +134,30 @@ export default function SupervisorDashboardPage() {
     setQrLoading(true);
     try {
       const res = await fetch(`${ATTENDANCE_API}/generate-session.php`, { credentials: "include" });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      
       const text = await res.text();
-      if (!text.startsWith("{")) throw new Error("Invalid response");
+      
+      if (!text || text.trim() === "") {
+        throw new Error("Empty response from server");
+      }
+      
+      if (!text.startsWith("{")) {
+        throw new Error("Invalid response format");
+      }
+      
       const qrData: QRSession = JSON.parse(text);
-      if (qrData.success) setSession(qrData);
-      else setSession(null);
-    } catch {
+      if (qrData.success && qrData.token) {
+        setSession(qrData);
+      } else {
+        throw new Error(qrData.error || "Failed to generate session");
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Unknown error";
+      console.error("QR session error:", errorMsg);
       setSession(null);
     } finally {
       setQrLoading(false);
@@ -319,7 +337,7 @@ export default function SupervisorDashboardPage() {
                   </div>
                 </>
               ) : (
-                <div className="sup-qr-error">QR unavailable</div>
+                <div className="sup-qr-error">Generating QR...</div>
               )}
             </div>
 
@@ -385,9 +403,7 @@ export default function SupervisorDashboardPage() {
         <div className="lg:col-span-2 space-y-6">
           <Section title="Supervisor Actions">
             <Action icon={MapPin} label="Live Check-In Map" href="/dashboard/supervisor/attendance-map" />
-            <Action icon={ClipboardCheck} label="Correction Requests" href="/dashboard/supervisor/corrections" />
             <Action icon={ClipboardPen} label="Task Assignment" href="/dashboard/supervisor/task-assignment" />
-            <Action icon={ClipboardList} label="Compliance Scores" href="/dashboard/supervisor/compliance" />
           </Section>
 
           {recentLate.length > 0 && (
@@ -413,13 +429,14 @@ export default function SupervisorDashboardPage() {
         <div className="space-y-6">
           <div className="dashboard-card">
             <h2 className="dashboard-section-title">Approval Queue</h2>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/dashboard/supervisor/leave-requests" className="dashboard-alert clickable">
-                  {approvalQueue.leaveRequests} leave request{approvalQueue.leaveRequests !== 1 ? "s" : ""} pending
-                </Link>
-              </li>
-            </ul>
+            {approvalQueue.leaveRequests > 0 && (
+              <div className="approval-queue-banner">
+                <span className="approval-queue-badge">{approvalQueue.leaveRequests}</span>
+                <span className="approval-queue-text">
+                  leave request{approvalQueue.leaveRequests !== 1 ? "s" : ""} pending
+                </span>
+              </div>
+            )}
             <div className="mt-4 space-y-2">
               <Mini icon={FileCheck} label="Leave Approvals" href="/dashboard/supervisor/leave-requests" />
               <Mini icon={Clock} label="Shift Approvals" href="/dashboard/supervisor/shift-approvals" />

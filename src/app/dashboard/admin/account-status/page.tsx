@@ -1,8 +1,8 @@
 "use client";
 
 import "@/styles/admin-account-status.css";
-import { useState } from "react";
-import { Shield, Lock, Unlock, Search, UserX, AlertTriangle } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Shield, Lock, Unlock, Search, UserX, AlertTriangle, Loader2 } from "lucide-react";
 
 interface Account {
   id: number;
@@ -11,36 +11,88 @@ interface Account {
   status: "Active" | "Suspended" | "Locked";
 }
 
+const API = "http://localhost/etms/controllers/admin";
+
 export default function AccountStatusPage() {
 
-  const [accounts, setAccounts] = useState<Account[]>([
-    { id: 1, name: "John Mwangi", email: "john@royalmabati.co.ke", status: "Active" },
-    { id: 2, name: "Grace Achieng", email: "grace@royalmabati.co.ke", status: "Suspended" },
-    { id: 3, name: "Peter Otieno", email: "peter@royalmabati.co.ke", status: "Active" }
-  ]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<Account | null>(null);
   const [showModal, setShowModal] = useState(false);
+
+  const fetchAccounts = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const query = search ? `?search=${encodeURIComponent(search)}` : "";
+      const res = await fetch(`${API}/get-admin-users.php${query}`, {
+        credentials: "include"
+      });
+      if (res.status === 401) {
+        setError("Session expired.");
+        return;
+      }
+      const json = await res.json();
+      if (json.success && json.users) {
+        setAccounts(json.users.map((u: any) => ({
+          id: u.id,
+          name: u.name || u.full_name,
+          email: u.email,
+          status: u.status === "Suspended" ? "Suspended" : u.status === "Locked" ? "Locked" : "Active"
+        })));
+      } else {
+        setError(json.error || "Failed to load accounts.");
+      }
+    } catch (err) {
+      setError("Unable to connect to server.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    fetchAccounts();
+  }, [fetchAccounts]);
 
   const filtered = accounts.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||
     a.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const toggleStatus = (status: "Suspended" | "Locked") => {
-
+  const toggleStatus = async (newStatus: "Suspended" | "Locked") => {
     if (!selectedUser) return;
 
-    setAccounts(prev =>
-      prev.map(acc =>
-        acc.id === selectedUser.id
-          ? { ...acc, status }
-          : acc
-      )
-    );
+    try {
+      const res = await fetch(`${API}/admin-users-actions.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          user_id: selectedUser.id,
+          action: newStatus === "Locked" ? "lock" : "suspend"
+        })
+      });
 
-    setShowModal(false);
+      const json = await res.json();
+      if (json.success) {
+        setAccounts(prev =>
+          prev.map(acc =>
+            acc.id === selectedUser.id
+              ? { ...acc, status: newStatus }
+              : acc
+          )
+        );
+        setShowModal(false);
+      } else {
+        alert(json.error || "Failed to update account status");
+      }
+    } catch {
+      alert("Error updating account status");
+    }
   };
 
   return (
@@ -66,7 +118,22 @@ export default function AccountStatusPage() {
         </div>
       </div>
 
+      {/* ERROR */}
+      {error && (
+        <div className="account-error">
+          <AlertTriangle size={18} /> {error}
+        </div>
+      )}
+
+      {/* LOADING */}
+      {loading && (
+        <div className="account-loading">
+          <Loader2 size={22} className="spin" /> Loading accounts...
+        </div>
+      )}
+
       {/* TABLE */}
+      {!loading && (
       <div className="account-card">
 
         <table className="account-table">
@@ -80,40 +147,47 @@ export default function AccountStatusPage() {
           </thead>
 
           <tbody>
-            {filtered.map(acc => (
-              <tr key={acc.id}>
-                <td>{acc.name}</td>
-                <td>{acc.email}</td>
-
-                <td>
-                  <span className={`status ${acc.status.toLowerCase()}`}>
-                    {acc.status}
-                  </span>
-                </td>
-
-                <td>
-                  <div className="action-buttons">
-
-                    <button
-                      className="lock-btn"
-                      onClick={() => {
-                        setSelectedUser(acc);
-                        setShowModal(true);
-                      }}
-                    >
-                      <Lock size={16}/>
-                      Change Status
-                    </button>
-
-                  </div>
-                </td>
-
+            {accounts.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="account-empty">No accounts found</td>
               </tr>
-            ))}
+            ) : (
+              accounts.map(acc => (
+                <tr key={acc.id}>
+                  <td>{acc.name}</td>
+                  <td>{acc.email}</td>
+
+                  <td>
+                    <span className={`status ${acc.status.toLowerCase()}`}>
+                      {acc.status}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div className="action-buttons">
+
+                      <button
+                        className="lock-btn"
+                        onClick={() => {
+                          setSelectedUser(acc);
+                          setShowModal(true);
+                        }}
+                      >
+                        <Lock size={16}/>
+                        Change Status
+                      </button>
+
+                    </div>
+                  </td>
+
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
       </div>
+      )}
 
       {/* MODAL */}
       {showModal && selectedUser && (

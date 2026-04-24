@@ -11,6 +11,15 @@ interface QRSession { success: boolean; token: string; expires: string; }
 
 const BASE = "http://localhost/etms/controllers";
 
+function parseSessionExpiry(value: string | undefined): number {
+  if (!value) return 0;
+
+  const normalized = value.includes("T") ? value : value.replace(" ", "T");
+  const expiresAt = new Date(normalized).getTime();
+
+  return Number.isNaN(expiresAt) ? 0 : expiresAt;
+}
+
 export default function ManagerQRPage() {
   const [time, setTime] = useState<Date>(new Date());
   const [refreshKey, setRefreshKey] = useState<number>(0);
@@ -47,21 +56,36 @@ export default function ManagerQRPage() {
 
   useEffect(() => { fetchCheckInStatus(); }, [fetchCheckInStatus]);
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const res = await fetch(`${BASE}/attendance/generate-session.php`, { credentials: "include" });
-        const text = await res.text();
-        if (!text.startsWith("{")) throw new Error("Invalid response");
-        const data: QRSession = JSON.parse(text);
-        if (data.success) setSession(data);
-      } catch (error) {
-        console.error("QR session error:", error);
+  const fetchSession = useCallback(async (): Promise<QRSession | null> => {
+    try {
+      const res = await fetch(`${BASE}/attendance/generate-session.php`, { credentials: "include" });
+      const text = await res.text();
+      if (!text.startsWith("{")) throw new Error("Invalid response");
+      const data: QRSession = JSON.parse(text);
+      if (data.success) {
+        setSession(data);
+        setCountdown(30);
+        return data;
       }
-    };
+    } catch (error) {
+      console.error("QR session error:", error);
+    }
 
-    fetchSession();
-  }, [refreshKey]);
+    return null;
+  }, []);
+
+  const ensureFreshSession = useCallback(async (): Promise<QRSession | null> => {
+    if (!session) return fetchSession();
+
+    const expiresAt = parseSessionExpiry(session.expires);
+    if (!expiresAt || expiresAt - Date.now() <= 5000) {
+      return fetchSession();
+    }
+
+    return session;
+  }, [fetchSession, session]);
+
+  useEffect(() => { fetchSession(); }, [fetchSession, refreshKey]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -83,15 +107,21 @@ export default function ManagerQRPage() {
     useGeolocation(office, radiusMeters, { enableHighAccuracy: true, watch: true });
 
   const confirmPresence = async () => {
-    if (!session || verifying) return;
+    if (verifying) return;
     setVerifying(true);
     try {
+      const activeSession = await ensureFreshSession();
+      if (!activeSession) {
+        alert("Refreshing secure QR. Please try again.");
+        return;
+      }
+
       const res = await fetch(`${BASE}/attendance/confirm.php`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          token: session.token,
+          token: activeSession.token,
           lat: position?.latitude ?? null,
           lng: position?.longitude ?? null,
           accuracy: position?.accuracy ?? null,

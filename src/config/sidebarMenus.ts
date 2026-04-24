@@ -21,6 +21,8 @@
   ClipboardPen,
   FileWarning,
   CreditCard,
+  Activity,
+  Award,
 } from "lucide-react";
 import "@/styles/sidebar.css";
 
@@ -93,7 +95,7 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
 
   supervisor: [
     {
-      title: "Dashboard Overview",
+      title: "Home",
       items: [
         { label: "Supervisor Dashboard", href: "/dashboard/supervisor", icon: LayoutDashboard },
         { label: "QR Check-In", href: "/dashboard/supervisor/qr", icon: QrCode },
@@ -108,9 +110,11 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
     {
       title: "Attendance Oversight",
       items: [
+        { label: "Staff Attendance", href: "/dashboard/supervisor/staff-attendance", icon: Users },
         { label: "Live Check-In Map", href: "/dashboard/supervisor/attendance-map", icon: MapPin },
         { label: "Late & Early Logs", href: "/dashboard/supervisor/late-logs", icon: Clock },
         { label: "Missing Check-Ins", href: "/dashboard/supervisor/missing-checkins", icon: ShieldAlert },
+        { label: "Shift Rules & Hours", href: "/dashboard/supervisor/shifts", icon: Calendar },
       ],
     },
     {
@@ -130,15 +134,22 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
 
   manager: [
     {
-      title: "Dashboard Overview",
+      title: "Home",
       items: [
         { label: "Manager Dashboard", href: "/dashboard/manager", icon: LayoutDashboard },
         { label: "QR Check-In", href: "/dashboard/manager/qr", icon: QrCode },
       ],
     },
     {
+      title: "Organization Management",
+      items: [
+        { label: "Assign Supervisors", href: "/dashboard/manager/supervisor-assignments", icon: Users },
+      ],
+    },
+    {
       title: "Attendance Analytics",
       items: [
+        { label: "Supervisor Attendance", href: "/dashboard/manager/supervisor-attendance", icon: Users },
         { label: "Department Attendance", href: "/dashboard/manager/attendance-overview", icon: Users },
         { label: "Attendance Trends", href: "/dashboard/manager/attendance-trends", icon: BarChart3 },
         { label: "Shift Utilization", href: "/dashboard/manager/shift-utilization", icon: Clock },
@@ -187,6 +198,12 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
       ],
     },
     {
+      title: "Analytics & Reports",
+      items: [
+        { label: "Attendance Reports", href: "/dashboard/admin/reports", icon: BarChart3 },
+      ],
+    },
+    {
       title: "Communication",
       items: [
         { label: "Notifications", href: "/dashboard/hr/notifications", icon: Bell },
@@ -203,6 +220,14 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
       ],
     },
     {
+      title: "Organization Management",
+      items: [
+        { label: "Departments", href: "/dashboard/admin/departments", icon: MapPin },
+        { label: "Organizational Chart", href: "/dashboard/admin/org-chart", icon: Users },
+        { label: "Manager Roles", href: "/dashboard/admin/manager-roles", icon: Award },
+      ],
+    },
+    {
       title: "User & Role Management",
       items: [
         { label: "Manage Users", href: "/dashboard/admin/users", icon: Users },
@@ -213,25 +238,21 @@ export const sidebarMenus: Record<SidebarRole, SidebarSection[]> = {
     {
       title: "System Health",
       items: [
-        { label: "Server Status", href: "/dashboard/admin/server-status", icon: Server },
-        { label: "Database Health", href: "/dashboard/admin/database-health", icon: BarChart3 },
+        { label: "System Health", href: "/dashboard/admin/health", icon: Activity },
         { label: "Backup & Restore", href: "/dashboard/admin/backup-restore", icon: FileCheck },
       ],
     },
     {
       title: "System Configuration",
       items: [
-        { label: "Shift Rules & Hours", href: "/dashboard/admin/shifts", icon: Calendar },
         { label: "QR & GPS Settings", href: "/dashboard/admin/qr-gps", icon: QrCode },
         { label: "Device Restrictions", href: "/dashboard/admin/devices", icon: Laptop },
       ],
     },
     {
-      title: "Integrations",
+      title: "Analytics & Reports",
       items: [
-        { label: "Biometric Systems", href: "/dashboard/admin/biometric-systems", icon: Users },
-        { label: "Payroll Systems", href: "/dashboard/admin/payroll-systems", icon: FileCheck },
-        { label: "Email & SMS Gateways", href: "/dashboard/admin/communication", icon: MessageSquare },
+        { label: "Attendance Reports", href: "/dashboard/admin/reports", icon: BarChart3 },
       ],
     },
     {

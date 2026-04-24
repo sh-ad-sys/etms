@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { API_ENDPOINTS, setToken } from "@/config/api";
+
 const FULL_TEXT = "Royal Mabati ETMS";
 
 type StatusType = "success" | "error" | null;
@@ -57,8 +58,11 @@ export default function LoginPage() {
     setLoading(true);
     setShowStatus(false);
     setStatusMessage(null);
+    setStatus(null);
 
     try {
+      console.log("?? Attempting login to:", API_ENDPOINTS.login);
+
       const response = await fetch(API_ENDPOINTS.login, {
         method: "POST",
         credentials: "include",
@@ -66,12 +70,17 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("? Response received. Status:", response.status);
+
       const data = await response.json();
+      console.log("?? Response data:", data);
 
       if (!response.ok) {
+        console.error("? Login failed:", data);
         setStatus("error");
-        setStatusMessage(data.error || "Login failed");
+        setStatusMessage(data.error || `Login failed (${response.status})`);
         setShowStatus(true);
+        setLoading(false);
         setTimeout(() => {
           setShowStatus(false);
           setStatusMessage(null);
@@ -80,22 +89,28 @@ export default function LoginPage() {
         return;
       }
 
+      console.log("? Login successful");
       setStatus("success");
       setStatusMessage("Login successful");
       setShowStatus(true);
 
       if (data.token) {
+        console.log("?? Token stored");
         setToken(data.token);
       }
 
       const role = data.user?.role?.trim().toUpperCase();
+      console.log("?? User role:", role);
 
       setTimeout(() => {
+        setLoading(false);
         if (data.mustChangePassword) {
+          console.log("?? Redirecting to first-login-password");
           router.push("/first-login-password");
           return;
         }
 
+        console.log("?? Redirecting based on role:", role);
         switch (role) {
           case "ADMIN":
             router.push("/dashboard/admin");
@@ -110,16 +125,16 @@ export default function LoginPage() {
             router.push("/dashboard/supervisor");
             break;
           default:
+            console.log("?? Unknown role, going to default dashboard");
             router.push("/dashboard");
         }
       }, 2400);
     } catch (error) {
-      setStatus("error");
-      setStatusMessage("An unexpected error occurred");
-      setShowStatus(true);
-      console.error(error);
-    } finally {
+      console.error("? Fetch error:", error);
       setLoading(false);
+      setStatus("error");
+      setStatusMessage(error instanceof Error ? error.message : "An unexpected error occurred");
+      setShowStatus(true);
     }
   };
 
@@ -354,4 +369,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

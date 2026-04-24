@@ -1,0 +1,374 @@
+/* ========================================================
+   MANAGER SUPERVISOR ASSIGNMENT
+========================================================= */
+
+:root {
+  --rmf-blue: #0f2e63;
+  --rmf-blue-dark: #0a1f44;
+  --rmf-blue-light: #1e40af;
+  --rmf-red: #d71920;
+  --rmf-green: #16a34a;
+  --rmf-gold: #facc15;
+  --rmf-bg: #f8fafc;
+  --rmf-border: #e5e7eb;
+  --rmf-gray: #6b7280;
+  --rmf-gray-light: #9ca3af;
+}
+
+.manager-assignment-container {
+  padding: 28px 36px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+}
+
+.manager-assignment-header {
+  margin-bottom: 32px;
+}
+
+.manager-assignment-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--rmf-blue);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.manager-assignment-header p {
+  color: var(--rmf-gray);
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+/* ================= ALERTS ================= */
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-error {
+  background: rgba(215, 25, 32, 0.1);
+  border: 1px solid var(--rmf-red);
+  color: var(--rmf-red);
+}
+
+.alert-success {
+  background: rgba(22, 163, 74, 0.1);
+  border: 1px solid var(--rmf-green);
+  color: var(--rmf-green);
+}
+
+.alert p {
+  margin: 0;
+  flex: 1;
+  font-weight: 500;
+}
+
+.alert button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* ================= LOADING STATE ================= */
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 40px;
+  background: white;
+  border-radius: 12px;
+  color: var(--rmf-gray);
+}
+
+.spin {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ================= DEPARTMENTS LIST ================= */
+
+.departments-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.dept-assignment-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid var(--rmf-blue);
+  transition: all 0.3s ease;
+}
+
+.dept-assignment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--rmf-blue);
+  margin: 0;
+}
+
+.dept-desc {
+  font-size: 13px;
+  color: var(--rmf-gray-light);
+  margin: 6px 0 0 0;
+  line-height: 1.4;
+}
+
+.manager-type-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.manager-type-badge.operations {
+  background: rgba(59, 130, 246, 0.2);
+  color: #1e40af;
+}
+
+.manager-type-badge.commercial {
+  background: rgba(16, 185, 129, 0.2);
+  color: #047857;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--rmf-border);
+  border-bottom: 1px solid var(--rmf-border);
+  margin-bottom: 16px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.info-row .label {
+  color: var(--rmf-gray);
+  font-weight: 600;
+}
+
+.info-row .value {
+  color: var(--rmf-blue);
+  font-weight: 600;
+}
+
+.supervisor-badge {
+  background: var(--rmf-blue);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: inline-block;
+}
+
+.empty-value {
+  color: var(--rmf-gray-light);
+  font-style: italic;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.supervisor-select {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.supervisor-select select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--rmf-border);
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+}
+
+.supervisor-select select:focus {
+  outline: none;
+  border-color: var(--rmf-blue);
+  box-shadow: 0 0 0 3px rgba(15, 46, 99, 0.1);
+}
+
+.btn-edit,
+.btn-remove,
+.btn-save,
+.btn-cancel {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.btn-edit {
+  background: var(--rmf-blue);
+  color: white;
+}
+
+.btn-edit:hover {
+  background: var(--rmf-blue-dark);
+  transform: translateY(-2px);
+}
+
+.btn-remove {
+  background: rgba(215, 25, 32, 0.1);
+  color: var(--rmf-red);
+  border: 1px solid var(--rmf-red);
+}
+
+.btn-remove:hover {
+  background: var(--rmf-red);
+  color: white;
+}
+
+.btn-save {
+  background: var(--rmf-green);
+  color: white;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: var(--rmf-green-dark);
+  transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  background: var(--rmf-blue);
+  color: white;
+  border: none;
+}
+
+.btn-cancel:hover {
+  background: var(--rmf-blue-dark);
+  transform: translateY(-2px);
+}
+
+/* ================= EMPTY STATE ================= */
+
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  background: white;
+  border-radius: 12px;
+  color: var(--rmf-gray);
+}
+
+.empty-state svg {
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+.empty-state h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--rmf-blue);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+  .manager-assignment-container {
+    padding: 16px;
+  }
+
+  .departments-list {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-assignment-header h1 {
+    font-size: 24px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .supervisor-select {
+    flex-direction: column;
+  }
+
+  .btn-edit,
+  .btn-remove,
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+  }
+}

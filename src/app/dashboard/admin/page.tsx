@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
       <div className="admin-header">
         <div>
           <h1><LayoutDashboard size={22} /> Admin Dashboard</h1>
-          <p>Manage users, configure systems, monitor security and oversee integrations - {data.date}</p>
+          <p>Manage users, configure systems and monitor security - {data.date}</p>
         </div>
         <div className="admin-header-right">
           <span className="admin-updated">Updated {data.generatedAt}</span>
@@ -184,7 +184,6 @@ export default function AdminDashboardPage() {
           </Section>
 
           <Section title="System Configuration">
-            <Action icon={Calendar} label="Shift Rules & Hours"  href="/dashboard/admin/shifts" />
             <Action icon={QrCode}   label="QR & GPS Settings"   href="/dashboard/admin/qr-gps" />
             <Action icon={Laptop}   label="Device Restrictions" href="/dashboard/admin/devices" />
           </Section>
@@ -202,15 +201,8 @@ export default function AdminDashboardPage() {
         <div className="admin-right-col">
 
           <Section title="System Health">
-            <Action icon={Server}   label="Server Status"    href="/dashboard/admin/server-status" />
-            <Action icon={BarChart3}label="Database Health"  href="/dashboard/admin/db-health" />
-            <Action icon={FileCheck}label="Backup & Restore" href="/dashboard/admin/backups" />
-          </Section>
-
-          <Section title="Integrations">
-            <Action icon={Users}       label="Biometric Systems"    href="/dashboard/admin/biometric" />
-            <Action icon={FileCheck}   label="Payroll Systems"      href="/dashboard/admin/payroll" />
-            <Action icon={MessageSquare}label="Email & SMS Gateways" href="/dashboard/admin/communication" />
+            <Action icon={Activity}label="System Health"    href="/dashboard/admin/health" />
+            <Action icon={FileCheck}label="Backup & Restore" href="/dashboard/admin/backup-restore" />
           </Section>
 
           {/* Recent Audit Log */}
